@@ -1,0 +1,16 @@
+{# extender la plantilla base #}
+{% extends 'base.html.twig' %}
+
+{# bloque de contenido #}
+{% block body %}
+
+    {# Generar PDF. #}
+    <div>
+        <object data="{{ asset('ruta/a/tu/pdf') }}" type="application/pdf" width="100%" height="100%">
+            <p> Parece que no se puede mostrar el PDF. Por favor, descárgalo en su lugar. </p>
+            <a href="{{ asset('ruta/a/tu/pdf') }}">Descargar PDF</a>
+        </object>
+    </div>
+
+{% endblock %}
+
