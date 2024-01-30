@@ -8,10 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: RutaRepository::class)]
 #[Broadcast]
-class Ruta
+class Ruta implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,6 +36,18 @@ class Ruta
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $foto = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $inicio = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $fin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $aforo = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $programacion = null;
 
     public function __construct()
     {
@@ -149,4 +162,70 @@ class Ruta
 
         return $this;
     }
+
+    public function getInicio(): ?\DateTimeInterface
+    {
+        return $this->inicio;
+    }
+
+    public function setInicio(?\DateTimeInterface $inicio): static
+    {
+        $this->inicio = $inicio;
+
+        return $this;
+    }
+
+    public function getFin(): ?\DateTimeInterface
+    {
+        return $this->fin;
+    }
+
+    public function setFin(?\DateTimeInterface $fin): static
+    {
+        $this->fin = $fin;
+
+        return $this;
+    }
+
+    public function getAforo(): ?int
+    {
+        return $this->aforo;
+    }
+
+    public function setAforo(?int $aforo): static
+    {
+        $this->aforo = $aforo;
+
+        return $this;
+    }
+
+    public function getProgramacion(): ?array
+    {
+        return $this->programacion;
+    }
+
+    public function setProgramacion(?array $programacion): static
+    {
+        $this->programacion = $programacion;
+
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nombre' => $this->getNombre(),
+            'coordInicio' => $this->getCoordInicio(),
+            'descripcion' => $this->getDescripcion(),
+            'items' => $this->getItems(),
+            'tours' => $this->getTours(),
+            'foto' => $this->getFoto(),
+            'inicio' => $this->getInicio(),
+            'fin' => $this->getFin(),
+            'aforo' => $this->getAforo(),
+            'programacion' => $this->getProgramacion()
+        ];
+    }
+
 }

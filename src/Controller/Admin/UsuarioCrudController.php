@@ -4,9 +4,17 @@ namespace App\Controller\Admin;
 
 use App\Entity\Usuario;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use phpDocumentor\Reflection\Types\Boolean;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\CrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use Symfony\Component\Validator\Constraints\Choice;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 
 class UsuarioCrudController extends AbstractCrudController
 {
@@ -15,14 +23,55 @@ class UsuarioCrudController extends AbstractCrudController
         return Usuario::class;
     }
 
-    /*
+    
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER'];
+        if (Crud::PAGE_INDEX===$pageName) { 
+            return [
+                yield IdField::new('id'),
+                yield TextField::new('email'),
+                yield TextField::new('nombre'),
+                yield TextField::new('apellidos'),
+                yield BooleanField::new('isVerified'),
+                // ImageField::new('foto')->setBasePath('/public/fotos/'),
+                yield ChoiceField::new('roles'),
+            ];
+        } elseif (Crud::PAGE_DETAIL===$pageName) {
+            return [
+                // IdField::new('id'),
+                yield TextField::new('email'),
+                yield TextField::new('nombre'),
+                yield TextField::new('apellidos'),
+                // yield TextField::new('fullName'), hacer método getFullName() en Usuario.php
+                yield TextField::new('password'),
+                yield BooleanField::new('isVerified'),
+                // ImageField::new('foto')->setBasePath('/public/fotos/'),
+                yield ChoiceField::new('roles'),
+                // yield ArrayField::new('reservas'),
+                // yield ArrayField::new('tours'),
+            ];
+        } elseif (Crud::PAGE_NEW===$pageName) {
+            return [
+                yield TextField::new('email'),
+                yield TextField::new('nombre'),
+                yield TextField::new('apellidos'),
+                yield TextField::new('password'),
+                yield BooleanField::new('isVerified'),
+                yield ImageField::new('foto')->setUploadDir('C:\xampp\htdocs\DEWESE\freetour\freetour\public\fotos'),
+                yield ArrayField::new('roles'),
+            ];
+        } elseif (Crud::PAGE_EDIT===$pageName) {
+            return [
+                yield TextField::new('email'),
+                yield TextField::new('nombre'),
+                yield TextField::new('apellidos'),
+                yield BooleanField::new('isVerified'),
+                yield ImageField::new('foto')->setBasePath('/public/fotos/'),
+                yield ArrayField::new('roles'),
+            ];
+        }
+       
     }
-    */
+    
 }

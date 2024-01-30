@@ -94,7 +94,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_USER'; //ROLE_USER es el rol por defecto que se le asigna a un usuario al registrarse
 
         return array_unique($roles);
     }
@@ -246,9 +246,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
             'nombre' => $this->getNombre(),
             'apellidos' => $this->getApellidos(),
             'foto' => $this->getFoto(),
-            'isVerified' => $this->isVerified()
-            // 'reservas' => $this->getReservas()->toArray(),
-            // 'tours' => $this->getTours()->toArray(),
+            'isVerified' => $this->isVerified(),
+            'reservas' => $this->getReservas(),
+            'tours' => $this->getTours(),
+            'roles' => $this->getRoles()
         ];
     }
 

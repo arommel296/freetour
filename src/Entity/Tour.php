@@ -8,10 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: TourRepository::class)]
 #[Broadcast]
-class Tour
+class Tour implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -141,5 +142,16 @@ class Tour
         $this->disponible = $disponible;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'fechaHora' => $this->getFechaHora(),
+            'ruta' => $this->getRuta(),
+            'usuario' => $this->getUsuario(),
+            'disponible' => $this->isDisponible(),
+        ];
     }
 }
