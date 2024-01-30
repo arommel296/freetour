@@ -28,6 +28,3 @@ symfony server:start -d
 
 Abre tu navegador y visita http://localhost:8000 para ver la aplicación.
 
-Contribuir
-Las contribuciones son bienvenidas. Por favor, abre un issue o realiza un pull request si quieres contribuir al proyecto.
-
