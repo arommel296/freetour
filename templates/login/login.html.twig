@@ -41,7 +41,7 @@
     </form>
 {% endblock %} #}
 
-{% extends 'base.html.twig' %}
+ {% extends 'base.html.twig' %}
 
 {% block title %}Iniciar Sesión{% endblock %}
 
@@ -86,3 +86,115 @@
     </div>
 </div>
 {% endblock %}
+
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Iniciar Sesión</div>
+                <div class="card-body">
+                    <form method="post" class="sign-up-form d-flex aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
+
+                        {% if app.user %}
+                            <div class="mb-3">
+                                Hola,  {{ app.user.nombre }}, <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="username">Email</label>
+                            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <input type="hidden" name="app_register" value="/register">
+                        <div class="form-group">
+                            <button type="submit" class="btn-getstarted">Iniciar Sesión</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} #}
+
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block styles %}
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/vendor/aos/aos.css')}}" rel="stylesheet">
+    <link href="{{ asset('estilos/assets/css/main.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <form method="post" class="php-email-form aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
+                    <div class="row gy-4">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
+                
+                        {% if app.user %}
+                            <div class="mb-3">
+                                Hola,  {{ app.user.nombre }}, <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
+                            </div>
+                        {% endif %}
+                
+                        <div class="col-md-12">
+                            <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesión</h1>
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label for="username">Email</label>
+                            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label for="password">Contraseña</label>
+                            <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                        </div>
+                
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                
+                        <div class="col-md-12 text-center">
+                            <button type="submit">Iniciar Sesión</button>
+                        </div>
+                    </div>
+                </form>
+</div>
+</div>
+</div>
+</div>
+<script src="{{ asset('estilos/assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/purecounter/purecounter_vanilla.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/aos/aos.js')}}"></script>
+        <script src="{{ asset('estilos/assets/vendor/php-email-form/validate.js')}}"></script>
+{% endblock %} #}
+

@@ -16,7 +16,11 @@ class UsuarioController extends AbstractController
         return new JsonResponse($usuario);
     }
 
-
+    #[Route('/api/usuarios', name: 'usuarios_show', methods: ['GET'])]
+    public function getUsuarios(Usuario $usuarios): Response
+    {
+        return $this->json($usuarios);
+    }
 
 
     public function index(): Response

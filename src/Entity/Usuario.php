@@ -116,7 +116,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
 
     public function setPassword(string $password): static
     {
-        $this->password = $password;
+        $this->password = hash('murmur3f', $password);
 
         return $this;
     }
@@ -236,6 +236,11 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
         }
 
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getNombre() . ' ' . $this->getApellidos();
     }
 
     public function jsonSerialize(): array

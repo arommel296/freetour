@@ -26,16 +26,24 @@ class UsuarioCrudController extends AbstractCrudController
     
     public function configureFields(string $pageName): iterable
     {
-        $roles = ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER'];
+        $roles = [
+            'Administrador' => 'ROLE_ADMIN',
+            'Guía' => 'ROLE_GUIA',
+            'Usuario' => 'ROLE_USER',
+        ];
         if (Crud::PAGE_INDEX===$pageName) { 
             return [
                 yield IdField::new('id'),
                 yield TextField::new('email'),
-                yield TextField::new('nombre'),
-                yield TextField::new('apellidos'),
+                // yield TextField::new('nombre'),
+                // yield TextField::new('apellidos'),
+                yield TextField::new('fullName')->setLabel('Nombre completo'),
                 yield BooleanField::new('isVerified'),
-                // ImageField::new('foto')->setBasePath('/public/fotos/'),
-                yield ChoiceField::new('roles'),
+                // yield ImageField::new('foto')
+                //                     ->setBasePath('fotos/')
+                //                     ->setUploadDir('public/fotos'),
+                yield ChoiceField::new('roles')
+                                    ->setChoices($roles),
             ];
         } elseif (Crud::PAGE_DETAIL===$pageName) {
             return [
@@ -43,11 +51,16 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('email'),
                 yield TextField::new('nombre'),
                 yield TextField::new('apellidos'),
-                // yield TextField::new('fullName'), hacer método getFullName() en Usuario.php
+                // yield TextField::new('fullName'),
                 yield TextField::new('password'),
                 yield BooleanField::new('isVerified'),
-                // ImageField::new('foto')->setBasePath('/public/fotos/'),
-                yield ChoiceField::new('roles'),
+                yield ChoiceField::new('roles')
+                                    ->setChoices($roles)
+                                    ->allowMultipleChoices(),
+                yield ImageField::new('foto')
+                                    ->setBasePath('fotos/')
+                                    ->setUploadDir('public/fotos')
+                                    ->setLabel('Foto de perfil'),
                 // yield ArrayField::new('reservas'),
                 // yield ArrayField::new('tours'),
             ];
@@ -59,7 +72,9 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('password'),
                 yield BooleanField::new('isVerified'),
                 yield ImageField::new('foto')->setUploadDir('C:\xampp\htdocs\DEWESE\freetour\freetour\public\fotos'),
-                yield ArrayField::new('roles'),
+                yield ChoiceField::new('roles')
+                                    ->setChoices($roles)
+                                    ->allowMultipleChoices(),
             ];
         } elseif (Crud::PAGE_EDIT===$pageName) {
             return [
@@ -67,8 +82,10 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('nombre'),
                 yield TextField::new('apellidos'),
                 yield BooleanField::new('isVerified'),
-                yield ImageField::new('foto')->setBasePath('/public/fotos/'),
-                yield ArrayField::new('roles'),
+                yield ImageField::new('foto')->setBasePath('/public/fotos/')->setUploadDir('C:\xampp\htdocs\DEWESE\freetour\freetour\public\fotos'),
+                yield ChoiceField::new('roles')
+                                    ->setChoices($roles)
+                                    ->allowMultipleChoices(),
             ];
         }
        
