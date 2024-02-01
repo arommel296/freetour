@@ -1,0 +1,87 @@
+{% include '@EasyAdmin/page/content.html.twig' %}
+
+<div id="buenas">
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+            <script src="js/jquery-3.7.1.js"></script>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+			<script src="js/droparea.js"></script>
+			{# <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/> #}
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+			<script type="text/javascript" src="https://jqwidgets.com/public/jqwidgets/jqx-all.js"></script>
+			<link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" type="text/css"/>
+			<script>
+				$(function () {
+                    var buenas = $("#buenas");
+
+                $(".content").append(buenas);
+                })
+			</script>
+			<title>Nueva Ruta</title>
+		</head>
+		<body>
+			<div class="container mt-5 p-5 border rounded shadow">
+				<h1 class="text-center display-4">Nueva Ruta</h1>
+				<form>
+					<div class="mb-3">
+						<label for="titulo" class="form-label">Título</label>
+						<input type="text" class="form-control" id="titulo"/>
+					</div>
+					<div class="mb-3">
+						<label for="descripcion" class="form-label">Descripción</label>
+						<div id="descripcion"></div>
+					</div>
+					<div class="mb-3">
+						<label for="dropzone" class="form-label">Imagen</label>
+						<div id="dropzone" class="dropzone"></div>
+					</div>
+					<div class="mb-3">
+						<label for="punto_encuentro" class="form-label">Punto de Encuentro</label>
+						<input type="text" class="form-control" id="punto_encuentro"/>
+					</div>
+					<div class="mb-3">
+						<label for="aforo" class="form-label">Aforo</label>
+						<input type="number" id="aforo" name="aforo" min="1" max="100" class="form-control"/>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="fecha" class="form-label">Fecha Inicio</label>
+							<input type="text" class="form-control" id="fecha_inicio"/>
+						</div>
+						<div class="col">
+							<label for="fecha_fin" class="form-label">Fecha Fin</label>
+							<input type="text" class="form-control" id="fecha_fin"/>
+						</div>
+					</div>
+					<div class="container">
+						<div class="row mt-3">
+							<div class="col-6 border" style="height: 300px;">
+								<h3 class="text-center">Items</h3>
+							</div>
+							<div class="col-6 border" style="height: 300px;">
+								<h3 class="text-center">Items de la Ruta</h3>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<script>
+				$(document).ready(function () {
+$('#descripcion').jqxEditor({height: '200px', width: '100%'})
+
+$('#dropzone').droparea({instructions: 'Arrastra una imagen aquí o haz clic para seleccionar un archivo', over: 'Arrastrando...'})
+
+$('#fecha_fin').datepicker({dateFormat: 'dd-mm-yy'})
+
+$('#fecha_inicio').datepicker({dateFormat: 'dd-mm-yy'})
+})
+			</script>
+		</body>
+	</html>
+</div>

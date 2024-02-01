@@ -55,12 +55,11 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('password'),
                 yield BooleanField::new('isVerified'),
                 yield ChoiceField::new('roles')
-                                    ->setChoices($roles)
-                                    ->allowMultipleChoices(),
+                                            ->setChoices($roles),
                 yield ImageField::new('foto')
-                                    ->setBasePath('fotos/')
-                                    ->setUploadDir('public/fotos')
-                                    ->setLabel('Foto de perfil'),
+                                            ->setBasePath('fotos/')
+                                            ->setUploadDir('public/fotos')
+                                            ->setLabel('Foto de perfil'),
                 // yield ArrayField::new('reservas'),
                 // yield ArrayField::new('tours'),
             ];
@@ -71,10 +70,13 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('apellidos'),
                 yield TextField::new('password'),
                 yield BooleanField::new('isVerified'),
-                yield ImageField::new('foto')->setUploadDir('C:\xampp\htdocs\DEWESE\freetour\freetour\public\fotos'),
+                yield ImageField::new('foto')
+                                            ->setBasePath('fotos/')
+                                            ->setUploadDir('public/fotos')
+                                            ->setLabel('Foto de perfil'),
                 yield ChoiceField::new('roles')
-                                    ->setChoices($roles)
-                                    ->allowMultipleChoices(),
+                                            ->setChoices($roles)
+                                            ->allowMultipleChoices(),
             ];
         } elseif (Crud::PAGE_EDIT===$pageName) {
             return [
@@ -82,10 +84,13 @@ class UsuarioCrudController extends AbstractCrudController
                 yield TextField::new('nombre'),
                 yield TextField::new('apellidos'),
                 yield BooleanField::new('isVerified'),
-                yield ImageField::new('foto')->setBasePath('/public/fotos/')->setUploadDir('C:\xampp\htdocs\DEWESE\freetour\freetour\public\fotos'),
+                yield ImageField::new('foto')
+                                            ->setBasePath('fotos/')
+                                            ->setUploadDir('public/fotos')
+                                            ->setLabel('Foto de perfil'),
                 yield ChoiceField::new('roles')
-                                    ->setChoices($roles)
-                                    ->allowMultipleChoices(),
+                                            ->setChoices($roles)
+                                            ->allowMultipleChoices(),
             ];
         }
        
