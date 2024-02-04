@@ -1,64 +1,129 @@
 {% include '@EasyAdmin/page/content.html.twig' %}
 
-<div id="buenas">
+<div id="nuevaRuta">
 	<!DOCTYPE html>
 	<html lang="en">
-		<head>
-			<meta charset="UTF-8"/>
-            <script src="js/jquery-3.7.1.js"></script>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-			<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-			<script src="js/droparea.js"></script>
-			{# <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/> #}
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-			<script type="text/javascript" src="https://jqwidgets.com/public/jqwidgets/jqx-all.js"></script>
-			<link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" type="text/css"/>
-			<script>
-				$(function () {
-                    var buenas = $("#buenas");
 
-                $(".content").append(buenas);
-                })
-			</script>
-			<title>Nueva Ruta</title>
-		</head>
-		<body>
-			<div class="container mt-5 p-5 border rounded shadow">
-				<h1 class="text-center display-4">Nueva Ruta</h1>
-				<form>
+	<head>
+		<meta charset="UTF-8" />
+		{#<script src="js/jquery-3.7.1.js"></script>#}
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		{# enlaces confiables para Jquery y Jquery UI  #}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css" />
+		<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+		{# <script src="js/droparea.js"></script>#}
+		{# <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/> #}
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+		</script>
+		{# enlace para el JS del plugin del editor de texto (jq widget) #}
+		<script type="text/javascript" src="https://jqwidgets.com/public/jqwidgets/jqx-all.js"></script>
+
+		{#<script src="{{ asset('estilos/fineuploader/jquery.fine-uploader.min.js')}}"></script>#}
+		{# enlace para el CSS del plugin del editor de texto (jq widget) #}
+		<link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" type="text/css" />
+
+		{# enlace para el JS del plugin del uploader de ficheros #}
+		<script src="{{ asset('estilos/uploader/dist/image-uploader.min.js')}}"></script>
+
+		{# enlace para el CSS del plugin del uploader de ficheros #}
+		<link rel="stylesheet" href="{{ asset('estilos/uploader/dist/image-uploader.min.css')}}" type="text/css" />
+
+		{#<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+		<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRqo4qwqHHrtbY9aL6vYYDw1GOhkK97MQ">
+		</script>#}
+		<script>
+			$(function () {
+				var nuevaRuta = $("#nuevaRuta");
+
+				$(".content").append(nuevaRuta);
+			})
+		</script>
+		<title>Nueva Ruta</title>
+		<script>
+			var map;
+
+
+			function initialize() {
+				map = new google.maps.Map(document.getElementById('map-canvas'), {
+					zoom: 3,
+					center: {
+						lat: 37.77,
+						lng: -3.78
+					}
+				});
+				var marker = new google.maps.Marker({
+					position: map.getCenter(),
+					map: map,
+					draggable: true
+				});
+
+				window.addEventListener('dragend', function (event) {
+					document.getElementById("coords").value = this.getPosition().toString();
+				});
+
+			}
+			window.addEventListener('load', initialize);
+		</script>
+	</head>
+
+	<body>
+		<div class="container mt-1 p-5 border rounded shadow">
+			<h1 class="text-center display-4">Nueva Ruta</h1>
+			<form id="tabs" enctype="multipart/form-data">
+				<ul>
+					<li><a href="#tabs-1">Paso 1</a></li>
+					<li><a href="#tabs-2">Paso 2</a></li>
+					<li><a href="#tabs-3">Paso 3</a></li>
+				</ul>
+				<div id="tabs-1">
 					<div class="mb-3">
 						<label for="titulo" class="form-label">Título</label>
-						<input type="text" class="form-control" id="titulo"/>
+						<input type="text" class="form-control" id="titulo" />
 					</div>
 					<div class="mb-3">
 						<label for="descripcion" class="form-label">Descripción</label>
 						<div id="descripcion"></div>
 					</div>
+
+				</div>
+				{# <div class="btn-container mb-3">
+					<button class="btn btn-primary siguiente">Siguiente</button>
+				</div> #}
+				<div id="tabs-2">
 					<div class="mb-3">
-						<label for="dropzone" class="form-label">Imagen</label>
-						<div id="dropzone" class="dropzone"></div>
+						<label for="foto" class="form-label">Imagen</label>
+						<div class="input-images"></div>
+						{# <input type="file" id="sueltaFoto" name="foto"></input> #}
 					</div>
-					<div class="mb-3">
-						<label for="punto_encuentro" class="form-label">Punto de Encuentro</label>
-						<input type="text" class="form-control" id="punto_encuentro"/>
-					</div>
-					<div class="mb-3">
-						<label for="aforo" class="form-label">Aforo</label>
-						<input type="number" id="aforo" name="aforo" min="1" max="100" class="form-control"/>
-					</div>
-					<div class="row">
+					<div class="row mb-3">
 						<div class="col">
-							<label for="fecha" class="form-label">Fecha Inicio</label>
-							<input type="text" class="form-control" id="fecha_inicio"/>
+							<label for="coord_inicio" class="form-label">Punto de inicio</label>
+							<input type="text" class="form-control" id="coord_inicio" />
+							<div class="col-md-12 col-sm-12" id="map-canvas"></div>
 						</div>
 						<div class="col">
-							<label for="fecha_fin" class="form-label">Fecha Fin</label>
-							<input type="text" class="form-control" id="fecha_fin"/>
+							<label for="aforo" class="form-label">Aforo</label>
+							<input type="number" id="aforo" name="aforo" min="1" max="100" class="form-control" />
 						</div>
 					</div>
-					<div class="container">
+					<div class="row mb-3">
+						<div class="col">
+							<label for="inicio" class="form-label">Inicio</label>
+							<input type="text" class="form-control" id="inicio" name="inicio">
+						</div>
+						<div class="col">
+							<label for="fin" class="form-label">Fin</label>
+							<input type="text" class="form-control" id="fin" name="fin">
+						</div>
+					</div>
+
+				</div>
+				
+				<div id="tabs-3">
+					<div class="container mb-3">
 						<div class="row mt-3">
 							<div class="col-6 border" style="height: 300px;">
 								<h3 class="text-center">Items</h3>
@@ -68,20 +133,137 @@
 							</div>
 						</div>
 					</div>
-				</form>
-			</div>
 
-			<script>
-				$(document).ready(function () {
-$('#descripcion').jqxEditor({height: '200px', width: '100%'})
+				</div>
+				{# <div class="btn-container mb-3">
+					<button href="" class="btn btn-primary atras">Anterior</button>
+				</div> #}
+				<div class="btn-container mb-3">
+					<div class="botonera">
+						<button href="" class="btn btn-primary atras">Anterior</button>
+					</div>
+					<div class="botonera"></div>
+					<div class="botonera">
+						<button href="" class="btn btn-primary siguiente">Siguiente</button>
+					</div>
+				</div>
+			</form>
+		</div>
 
-$('#dropzone').droparea({instructions: 'Arrastra una imagen aquí o haz clic para seleccionar un archivo', over: 'Arrastrando...'})
+</div>
 
-$('#fecha_fin').datepicker({dateFormat: 'dd-mm-yy'})
+<script>
+	$(document).ready(function () {
+		$('#descripcion').jqxEditor({
+			height: '200px',
+			width: '100%'
+		})
 
-$('#fecha_inicio').datepicker({dateFormat: 'dd-mm-yy'})
-})
-			</script>
-		</body>
-	</html>
+		// $('#dropzone').droparea({instructions: 'Arrastra una imagen aquí o haz clic para seleccionar un archivo', over: 'Arrastrando...'})
+
+		$('#fin').datepicker({
+			dateFormat: 'dd-mm-yy'
+		})
+
+		$('#inicio').datepicker({
+			dateFormat: 'dd-mm-yy'
+		})
+
+		$('.input-images').imageUploader({
+			label: 'Arrastra imágenes o haz click para buscarlas en tu almacenamiento',
+			extensions: ['.jpg', '.jpeg', '.png'],
+			imagesInputName: 'Foto',
+			maxSize: 2 * 1024 * 1024,
+			maxFiles: 1
+		});
+
+		$("#tabs").tabs({
+			beforeLoad: function (event, ui) {
+				ui.jqXHR.fail(function () {
+					ui.panel.html(
+						"No se ha podido cargar esta pestaña");
+				});
+			}
+		});
+
+		var $tabs = $("#tabs").tabs(); // Inicializa los tabs
+		var nTabs = $("#tabs").find("ul li").length;
+		var atras = 
+
+		$(".siguiente").click(function (e) {
+			e.preventDefault(); // Evita que el navegador navegue al href del enlace
+
+			var active = $tabs.tabs("option", "active");
+			// Obtiene el índice del tab activo
+			if (active==nTabs-2) {
+				$tabs.tabs("option", "active", active + 1); // Cambia al siguiente tab
+				$(this).hide();
+
+			} else{
+				$(this).show();
+				if (active!=nTabs-1) {
+					$tabs.tabs("option", "active", active + 1); // Cambia al siguiente tab
+				}
+				// $(this).show();
+			}
+			
+		});
+
+		$(".atras").click(function (e) {
+			e.preventDefault(); // Evita que el navegador navegue al href del enlace
+
+			var active = $tabs.tabs("option", "active");
+			// Obtiene el índice del tab activo
+			// $tabs.tabs("option", "active", active - 1); // Cambia al siguiente tab
+			if (active!=0) {
+				$tabs.tabs("option", "active", active - 1); // Cambia al siguiente tab
+				$(this).hide();
+
+			} else{
+				$(this).show();
+				if (active==1) {
+					$tabs.tabs("option", "active", active - 1); // Cambia al siguiente tab
+				}
+				// $(this).show();
+			}
+		});
+
+	})
+</script>
+<style>
+	.ui-tabs .ui-tabs-nav .ui-tabs-tab {
+		background-color: #ea5757;
+	}
+
+	.btn-primary {
+		background-color: #ea5757;
+	}
+
+	.btn-container {
+		display: flex;
+		
+	}
+
+	.ui-tabs .ui-tabs-panel {
+		height: 400px;
+		/* Añade scroll si el contenido es mayor que la altura */
+		overflow: auto;
+	}
+	.botonera{
+		display: flex;
+		justify-content: center;
+		width: 33%;
+	}
+
+	.botonera:first-child{
+		justify-content: flex-end;
+	}
+	.botonera:last-child{
+		justify-content: flex-start;
+	}
+</style>
+
+</body>
+
+</html>
 </div>

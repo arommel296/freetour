@@ -30,7 +30,7 @@ class Item
 
     #[ORM\ManyToOne(inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?localidad $localidad = null;
+    private ?Localidad $localidad = null;
 
     public function getId(): ?int
     {
@@ -85,12 +85,12 @@ class Item
         return $this;
     }
 
-    public function getLocalidad(): ?localidad
+    public function getLocalidad(): ?Localidad
     {
         return $this->localidad;
     }
 
-    public function setLocalidad(?localidad $localidad): static
+    public function setLocalidad(?Localidad $localidad): static
     {
         $this->localidad = $localidad;
 

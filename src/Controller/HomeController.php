@@ -10,10 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class HomeController extends AbstractController
 {
-    #[Route(path: '/home', name: 'app_home')]
+    #[Route(path: '/home', name: 'principal')]
     public function home(): Response
     {
-        
+        // echo 'El usuario actual es: ' . get_current_user();
         return $this->render('home/home.html.twig');
     }
 

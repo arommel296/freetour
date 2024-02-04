@@ -36,7 +36,7 @@ class Tour implements JsonSerializable
     private ?Ruta $ruta = null;
 
     #[ORM\Column]
-    private ?bool $disponible = true;
+    private ?bool $disponible = false;
     //si pongo el atributo $disponible a true, el tour estará disponible por defecto?
 
     public function __construct()
@@ -142,6 +142,11 @@ class Tour implements JsonSerializable
         $this->disponible = $disponible;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getRuta()->getNombre().'-'.$this->getFechaHora();
     }
 
     public function jsonSerialize(): array

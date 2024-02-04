@@ -2,18 +2,29 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Tour;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Usuario;
+use App\Entity\Ruta;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use Symfony\Component\Security\Core\User\UserInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 
 class DashboardController extends AbstractDashboardController
 {
+    // private Usuario $usuario;
+
+    // public function __construct(Usuario $usuario){
+    //     $this->usuario = $usuario;
+    // }
+
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
@@ -51,9 +62,19 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToRoute('Página Principal', 'fa fa-home', 'home');
+        yield MenuItem::section('General');
+        yield MenuItem::linkToRoute('Página Principal', 'fa fa-home', 'principal');
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Usuario::class);
-        yield MenuItem::section('Free Tour');
+        // yield MenuItem::linkToLogout('Cerrar Sesión', 'fa fa-sign-out');
+        yield MenuItem::section('FreeTour');
+        yield MenuItem::linkToRoute('Rutas', 'fas fa-map-marked-alt', 'creaRuta');
+        yield MenuItem::linkToCrud('Tours', 'fas fa-shoe-prints', Tour::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
+
+    public function configureUserMenu(UserInterface $user): UserMenu
+    {
+        return parent::configureUserMenu($user);
+    }
+
 }

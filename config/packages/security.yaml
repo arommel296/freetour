@@ -20,11 +20,11 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_register
+                default_target_path: principal
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: app_login
+                target: principal
             user_checker: App\Security\UserChecker
 
             # activate different ways to authenticate

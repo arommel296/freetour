@@ -238,6 +238,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
         return $this;
     }
 
+    public function __toString(){
+        return $this->getFullName();
+    }
+
     public function getFullName(): string
     {
         return $this->getNombre() . ' ' . $this->getApellidos();
