@@ -41,11 +41,78 @@
     </form>
 {% endblock %} #}
 
- {% extends 'base.html.twig' %}
+{% extends 'home/home.html.twig' %}
 
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block body %}
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+
+      <a href="{{path('principal')}}" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1>Freetours.es</h1>
+        <span></span>
+      </a>
+
+      <!-- Nav Menu -->
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{{path('principal')}}" class="active"><img src="{{ asset('static/img/casaroja.png') }}"
+                alt="Inicio" class="icono" width="28px" height="28px">Inicio</a></li>
+          {% if is_granted('ROLE_ADMIN') %}
+          <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/configuracionroja.png') }}"
+                alt="Inicio" class="icono" width="28px" height="28px">Panel de Administrador</a>
+          </li>
+          {% endif %}
+          {% if is_granted('ROLE_GUIA') %}
+          <li><a href="{{path('guia')}}" class="">Panel de Guía</a></li>
+          {% endif %}
+          <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio"
+                class="icono" width="28px" height="28px">Todas las ciudades</a></li>
+        </ul>
+
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav><!-- End Nav Menu -->
+      {% if app.user %}
+      <div class="navmenu">
+
+        <ul>
+          <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
+            <ul class="dd-box-shadow">
+              <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}" alt="Inicio"
+                    class="icono" width="28px" height="28px">Mi Perfil</a></li>
+              <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}" alt="Inicio"
+                    class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+        {# <a class="active">Hola, {{app.user}}</a> #}
+
+      </div>
+      {% else %}
+      <div>
+        <a class="btn-getstarted" href="{{path('app_login')}}"><img
+            src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
+            height="28px"><span>Iniciar Sesión</span></a>
+        <a class="btn-getstarted" href="{{path('app_register')}}"><img
+            src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
+            height="28px"><span>Registrarse</span></a>
+      </div>
+
+      {# <ul>
+            <li>
+              <a class="btn-getstarted active" href="{{path('app_login')}}"><img src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Iniciar Sesión</a>
+            </li>
+            <li>
+              <a class="btn-getstarted active" href="{{path('app_register')}}"><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Registrarse</a>
+            </li>
+          </ul> #}
+      {% endif %}
+
+    </div>
+  </header><!-- End Header -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">

@@ -25,16 +25,12 @@ class UsuarioController extends AbstractController
         $usu = $usuario->getId();
         if($usu == null){
             $this->addFlash('error', 'El usuario no existe');
-            return new RedirectResponse('bundle/error404.html.tig', 404);
+            return new RedirectResponse('error404.html.twig', 404);
         }else{
             $url = $this->generateUrl('usuario_json', ['id' => $usuario->getId()]);
             return new RedirectResponse($url, 302);
         }
-    //quiero comprobar si el usuario existe y si no manejar el error
-        // $url = $this->generateUrl('usuario_json', ['id' => $usuario->getId()]);
 
-    // Devuelve la URL como respuesta
-        
     }
 
     #[Route('/usuario/{id}/json', name: 'usuario_json', methods: ['GET'])]

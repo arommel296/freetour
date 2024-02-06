@@ -1,0 +1,51 @@
+.ui-tabs .ui-tabs-nav .ui-tabs-tab {
+    background-color: #ea5757;
+}
+
+.btn-primary {
+    background-color: #ea5757;
+}
+
+.btn-container {
+    display: flex;
+
+}
+
+.ui-tabs .ui-tabs-panel {
+    height: 400px;
+    /* Añade scroll si el contenido es mayor que la altura */
+    overflow: auto;
+}
+
+.botonera {
+    display: flex;
+    justify-content: center;
+    width: 33%;
+}
+
+.botonera:first-child {
+    justify-content: flex-end;
+}
+
+.botonera:last-child {
+    justify-content: flex-start;
+}
+
+.ui-widget.ui-widget-content {
+    border: none;
+}
+
+.ui-widget-content {
+    border: none;
+    background: #ffffff;
+    color: #333333;
+}
+
+#tabs-1, #tabs-2, #tabs-3{
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+}
+
+label{
+    font-size: large;
+}
