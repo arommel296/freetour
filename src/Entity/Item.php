@@ -96,4 +96,16 @@ class Item
 
         return $this;
     }
+
+    public function jsonSerialize(){
+
+        return [
+            'id' => $this->getId(),
+            'nombre' => $this->getNombre(),
+            'coordenadas' => $this->getCoordenadas(),
+            'descripcion' => $this->getDescripcion(),
+            'foto' => $this->getFoto(),
+        ];
+    }
+
 }

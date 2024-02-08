@@ -49,3 +49,37 @@
 label{
     font-size: large;
 }
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+            /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+}
+
+img{
+    width: 100%;
+    width: 100%;
+}
+
+.itemDisp li, .itemRuta li{
+    list-style: none;
+    margin: 3px 3px 3px 0; 
+    padding: 1px; 
+    float: left; 
+    width: 110px; 
+    height: 100px; 
+    font-size: small; 
+    text-align: center;
+    /* white-space: nowrap; */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.content-wrapper{
+    /* overflow-y: auto; */
+    height: 800px;
+}

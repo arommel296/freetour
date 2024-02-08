@@ -8,14 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 class RutaCrudController extends AbstractCrudController
 {
@@ -55,6 +50,19 @@ class RutaCrudController extends AbstractCrudController
         //         ->setUploadedFileNamePattern('[randomhash].[extension]'),
         // ];
         return [];
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        // return parent::configureActions()
+        return $actions
+        // ->add(Crud::PAGE_INDEX, Action::DETAIL)
+        ->update(Crud::PAGE_INDEX, Action::NEW , function (Action $action) {
+            return $action->linkToRoute('creaRuta', []);
+        })
+        ->update(Crud::PAGE_INDEX, Action::EDIT , function (Action $action) {
+            return $action->linkToCrudAction('editRedirect');
+        });
     }
 
     #[Route('/creaRuta', name: 'creaRuta')]

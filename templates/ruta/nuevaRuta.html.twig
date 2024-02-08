@@ -1,8 +1,6 @@
 {% include '@EasyAdmin/page/content.html.twig' %}
 
 <div id="nuevaRuta">
-	<!DOCTYPE html>
-	<html lang="en">
 
 	<head>
 		<meta charset="UTF-8" />
@@ -19,6 +17,9 @@
 		</script>
 		{# enlace para el JS del plugin del editor de texto (jq widget) #}
 		<script type="text/javascript" src="https://jqwidgets.com/public/jqwidgets/jqx-all.js"></script>
+
+		<!-- Cargo idioma español para datepicker -->
+    	<script src="{{ asset('static/js/datepicker.es.js')}}" charset="UTF-8"></script>
 
 		{#<script src="{{ asset('estilos/fineuploader/jquery.fine-uploader.min.js')}}"></script>#}
 		{# enlace para el CSS del plugin del editor de texto (jq widget) #}
@@ -50,9 +51,10 @@
 				<ul>
 					<li><a href="#tabs-1">Paso 1</a></li>
 					<li><a href="#tabs-2">Paso 2</a></li>
-					<li><a href="#tabs-3">Paso 3</a></li>
+					{# <li><a href="#tabs-3">Paso 3</a></li> #}
+					{# <li><a href="#tabs-4">Paso 4</a></li> #}
 				</ul>
-				<div id="tabs-1" class="mt-1 p-3 border rounded">
+				<div id="tabs-1" class="mt-1 p-2 border rounded">
 					<div class="mb-3">
 						<label for="titulo" class="form-label">Título</label>
 						<input type="text" class="form-control" id="titulo" />
@@ -61,15 +63,9 @@
 						<label for="descripcion" class="form-label">Descripción</label>
 						<div id="descripcion"></div>
 					</div>
-
-				</div>
-				{# <div class="btn-container mb-3">
-					<button class="btn btn-primary siguiente">Siguiente</button>
-				</div> #}
-				<div id="tabs-2" class="mt-1 p-3 border rounded">
 					<div class="mb-3">
 						<label for="foto" class="form-label">Imagen</label>
-						<div class="input-images"></div>
+						<div class="input-images" id="subeFotos"></div>
 						{# <input type="file" id="sueltaFoto" name="foto"></input> #}
 					</div>
 					<div class="row mb-3">
@@ -78,10 +74,12 @@
 							<input type="text" class="form-control" id="coord_inicio"
 								placeholder="Click para desplegar el mapa">
 							<div id="mapaDialog">
-								<div id="mapid" style="height: 300px;"></div>
+								<div id="mapid" style="height: 400px;"></div>
 								<!-- input para la ciudad y un botón para buscarla style="height: 180px;"-->
-								<input type="text" class="form-control" id="sitio">
-								<button id="buscarLugar" class="btn btn-primary">Buscar</button>
+								<div>
+									<input type="text" class="form-control" id="sitio" placeholder="Escriba el sitio y la localidad">
+									<button id="buscarLugar" class="btn btn-primary">Buscar</button>
+								</div>
 							</div>
 
 							<!--<button onclick="searchCity(event)" class="btn btn-primary">Buscar</button>-->
@@ -91,7 +89,7 @@
 							<input type="number" id="aforo" name="aforo" min="1" max="100" class="form-control" />
 						</div>
 					</div>
-					<div class="row mb-3">
+					<div class="row mb-1">
 						<div class="col">
 							<label for="inicio" class="form-label">Inicio</label>
 							<input type="text" class="form-control" id="inicio" name="inicio">
@@ -101,10 +99,16 @@
 							<input type="text" class="form-control" id="fin" name="fin">
 						</div>
 					</div>
-
 				</div>
+				{# <div class="btn-container mb-3">
+					<button class="btn btn-primary siguiente">Siguiente</button>
+				</div> #}
+				<div id="tabs-2" class="mt-1 p-2 border rounded">
+					
 
-				<div id="tabs-3" class="mt-1 p-3 border rounded">
+				
+
+				{# <div id="tabs-3" class="mt-1 p-1 border rounded"> #}
 					<div class="container mb-3">
 						<div class="row mt-1">
 							<h3 class="text-center col-5">Items disponibles</h3>
@@ -114,29 +118,50 @@
 
 						<div class="row mt-1">
 
-							<div class="col-12 col-md-5 border" style="height: 300px; border-radius: 5px">
+							<div class="col-12 col-md-5 border itemDisp" style="height: 250px; border-radius: 5px">
 								{# <h3 class="text-center">Items</h3> #}
-								<ul id="sortable1" class="connectedSortable">
-									<li class="ui-state-default">Item 1</li>
+								<ul id="sortable1" class="connectedSortable" style="height: 100%; width: 100%;">
+									{# <li class="ui-state-default">Item 1</li>
 									<li class="ui-state-default">Item 2</li>
 									<li class="ui-state-default">Item 3</li>
 									<li class="ui-state-default">Item 4</li>
-									<li class="ui-state-default">Item 5</li>
+									<li class="ui-state-default">Item 5</li> #}
 								</ul>
+
 							</div>
 							<div class="col-12 col-md-2">
 
 							</div>
 
-							<div class="col-12 col-md-5 border" style="height: 300px; border-radius: 5px">
+							<div class="col-12 col-md-5 border itemRuta" style="height: 250px; border-radius: 5px">
 								{# <h3 class="text-center">Items de la Ruta</h3> #}
 								<ul id="sortable2" class="connectedSortable" style="height: 100%; width: 100%;">
 
 								</ul>
 							</div>
 						</div>
+
+						<div class="row mt-1">
+							<div class="d-flex justify-content-around col-5">
+								<label for="localidad">Localidad</label>
+								<input type="text" name="localidad" id="localidad">
+								<button id="buscaLocalidad" class="btn btn-primary text-align-center" >Buscar</button>
+							</div>
+							<div class="col-2">
+
+							</div>
+							<div class="col-5">
+								
+							</div>
+						</div>
 					</div>
 				</div>
+				{# </div> #}
+				{# <div id="tabs-4" class="mt-1 p-1 border rounded">
+					<div class="d-flex justify-content-around col-12">
+						
+					</div>
+				</div> #}
 				{# <div class="btn-container mb-3">
 					<button href="" class="btn btn-primary atras">Anterior</button>
 				</div> #}
@@ -152,6 +177,4 @@
 			</form>
 		</div>
 	</body>
-
-	</html>
 </div>

@@ -42,4 +42,17 @@ class CorreoManager extends AbstractController
         return false;
         
     }
+
+    public function sendEmail($correo, $subject, $text): bool
+    {
+        $email = (new Email())
+        ->from($this->adminEmail)
+        ->to($correo)
+        ->subject($subject)
+        ->text($text);
+
+        $this->mailer->send($email);
+
+        return false;
+    }
 }

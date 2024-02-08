@@ -25,7 +25,7 @@ class Localidad
 
     #[ORM\ManyToOne(inversedBy: 'localidades')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?provincia $provincia = null;
+    private ?Provincia $provincia = null;
 
     #[ORM\OneToMany(mappedBy: 'localidad', targetEntity: Item::class)]
     private Collection $items;
@@ -83,12 +83,12 @@ class Localidad
     //     return $this;
     // }
 
-    public function getProvincia(): ?provincia
+    public function getProvincia(): ?Provincia
     {
         return $this->provincia;
     }
 
-    public function setProvincia(?provincia $provincia): static
+    public function setProvincia(?Provincia $provincia): static
     {
         $this->provincia = $provincia;
 
@@ -135,5 +135,13 @@ class Localidad
         $this->id = $id;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nombre' => $this->getNombre(),
+        ];
     }
 }

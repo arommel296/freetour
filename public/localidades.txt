@@ -1,0 +1,18 @@
+[
+    {
+        "nombre": "Jaén",
+        "codigo": 1
+    },
+    {
+        "nombre": "Granada",
+        "codigo": 2
+    },
+    {
+        "nombre": "Mancha Real",
+        "codigo": 3
+    },
+    {
+        "nombre": "Torres",
+        "codigo": 4
+    }
+]

@@ -41,35 +41,29 @@ $(function () {
         console.log(active);
     })
 
-    $("#mapaDialog").dialog({
-        autoOpen: false,
-        modal: true,
-        show: {
-            effect: "blind",
-            duration: 500
-        },
-        hide: {
-            effect: "explode",
-            duration: 500
-        }
-    });
-
-    coord_inicio.on("click", function () {
-        $("#mapaDialog").dialog("open");
-    })
+   
 
     $('#descripcion').jqxEditor({
         height: '220px',
         width: '100%'
     })
 
-    $('#fin').datepicker({
-        dateFormat: 'dd-mm-yy'
-    })
 
     $('#inicio').datepicker({
-        dateFormat: 'dd-mm-yy'
-    })
+        dateFormat: 'dd-mm-yy',
+        minDate: new Date(),
+        onSelect: function(selectedDate) {
+            $('#fin').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    
+    $('#fin').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: new Date(),
+        onSelect: function(selectedDate) {
+            $('#inicio').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
 
     $('.input-images').imageUploader({
         label: 'Arrastra imágenes o haz click para buscarlas en tu almacenamiento',
@@ -116,75 +110,196 @@ $(function () {
         $tabs.tabs("option", "active", active - 1);
     });
 
-    // Inicializa el mapa de Leaflet
-    // L es una variable global de Leaflet
-    // map() es una función que crea un mapa en el elemento con el id 'mapid'
-    var mapa = L.map('mapid').setView([37.77, -3.79], 13);
+    $("#mapaDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            show: {
+                effect: "blind",
+                duration: 500
+            },
+            hide: {
+                effect: "blind",
+                duration: 500
+            },
+            width: 700,
+            height: 650,
+        });
 
-    // Añade un marcador al mapa por defecto
-    var marker = L.marker([37.77, -3.79]).addTo(mapa);
+        coord_inicio.on("click", function () {
+            creaMapa();
 
-    // Añade la capa de tiles
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 20,
-        // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapa);
+    })
 
-    mapa.on('click', function (e) {
-        // Define las coordenadas del marker donde se ha hecho clic
-        marker.setLatLng(e.latlng);
+    function creaMapa() {
+        $("#mapaDialog").dialog("open");
 
-        console.log("punto puesto clicando");
-        // Pone las coordenadas del marker en el input
-        coord_inicio.val(e.latlng.lat + ', ' + e.latlng.lng);
-        console.log(coord_inicio.val());
-    });
+            // Inicializa el mapa de Leaflet
+        // L es una variable global de Leaflet
+        // map() es una función que crea un mapa en el elemento con el id 'mapid'
+        var mapa = L.map('mapid').setView([37.77, -3.79], 15);
+
+        // Añade un marcador al mapa por defecto
+        var marker = L.marker([37.77, -3.79]).addTo(mapa);
+
+        L.tileLayer('https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+            minZoom: 0,
+            maxZoom: 22,
+            accessToken: 'rSpYFAsrP0xh9UQNavI4LCwxGfaAzB4OVL9PGe4rABoU6l1awbhA9ORdSGE8m515'
+        }).addTo(mapa);
+        
+        mapa.on('click', function (e) {
+            // Define las coordenadas del marker donde se ha hecho clic
+            marker.setLatLng(e.latlng);
+
+            console.log("punto puesto clicando");
+            // Pone las coordenadas del marker en el input
+            coord_inicio.val(e.latlng.lat + ', ' + e.latlng.lng);
+            console.log(coord_inicio.val());
+        });
+
+        function buscarPorCiudad(event) {
+            event.preventDefault();
+            // Obtiene la ciudad del input
+            var sitio = $("#sitio").val();
+
+            // Utiliza la API de geocodificación de OpenStreetMap Nominatim para obtener las coordenadas del sitio de la ciudad
+            var nominatimURL = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(sitio);
+
+            $.ajax({
+                url: nominatimURL,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.length > 0) {
+                        // Obtiene las coordenadas de la ciudad
+                        var lat = data[0].lat;
+                        var lon = data[0].lon;
+
+                        // Centra el mapa en las coordenadas de la ciudad y coloca un marcador
+                        mapa.setView([lat, lon], 17);
+                        // Pone las coordenadas del marker en el input
+                        marker.setLatLng([lat, lon]);
+                        console.log("punto puesto buscando por nombre");
+                        coord_inicio.val(lat + ', ' + lon);
+                        console.log(coord_inicio.val());
+                    } else {
+                        alert("No se encontró la ciudad.");
+                    }
+                },
+                error: function () {
+                    alert("Error al buscar la ciudad. Por favor, inténtalo de nuevo.");
+                }
+            });
+
+        }
+
+        var buscar = $("#buscarLugar");
+
+        buscar.on("click", buscarPorCiudad);
+        
+    }
+    
 
 
     // Función 
-    function buscarPorCiudad(event) {
-        event.preventDefault();
-        // Obtiene la ciudad del input
-        var sitio = $("#sitio").val();
+    
 
-        // Utiliza la API de geocodificación de OpenStreetMap Nominatim para obtener las coordenadas del sitio de la ciudad
-        var nominatimURL = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(sitio);
-
-        $.ajax({
-            url: nominatimURL,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                if (data.length > 0) {
-                    // Obtiene las coordenadas de la ciudad
-                    var lat = data[0].lat;
-                    var lon = data[0].lon;
-
-                    // Centra el mapa en las coordenadas de la ciudad y coloca un marcador
-                    mapa.setView([lat, lon], 13);
-                    // Pone las coordenadas del marker en el input
-                    marker.setLatLng([lat, lon]);
-                    console.log("punto puesto buscando por nombre");
-                    coord_inicio.val(lat + ', ' + lon);
-                    console.log(coord_inicio.val());
-                } else {
-                    alert("No se encontró la ciudad.");
-                }
-            },
-            error: function () {
-                alert("Error al buscar la ciudad. Por favor, inténtalo de nuevo.");
-            }
-        });
-
-    }
-
-    var buscar = $("#buscarLugar");
-
-    buscar.on("click", buscarPorCiudad);
+    
 
     $("#sortable1, #sortable2").sortable({
         connectWith: ".connectedSortable",
         placeholder: "placeholder"
     }).disableSelection();
+
+    // var localidades = $.ajax({
+    //     url: "http://127.0.0.1:8000/api/localidad/favoritas",
+    //     type: 'GET',
+    //     dataType: 'json',
+    //     success: function (data) {
+
+    //     },
+    //     error: function () {
+
+    //     }
+    // })
+
+    // $("#localidad").autocomplete({
+    //     source: "localidades.txt",
+    //     minLength: 2,
+    //     select: function (event, ui) {
+    //         log("Selected: " + ui.item.value + " aka " + ui.item.id);
+    //     }
+    // });
+
+    var localidad = $("#localidad");
+    var itemDisp = $("#sortable1");
+
+    localidad.autocomplete({
+        source: function(request, response) {
+            //petición ajax para obtener los datos
+            $.ajax({
+                url: "/api/localidad/all", //ruta de la api
+                dataType: "json", //tipo de datos que se espera
+                success: function(data) {
+                    var results = data.filter(function(localidad) { //filtro para obtener los datos que coincidan con el término de búsqueda
+                        return localidad.nombre.toLowerCase().startsWith(request.term.toLowerCase()); //comparación de la cadena de búsqueda con los datos
+                    });
+                    response(results.map(function(localidad) {
+                        return {
+                            value: localidad.nombre,
+                            id: localidad.id
+                        };
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+
+        select: function (event, ui) {  
+            console.log("Loclaidad seleccionada: " + ui.item.value + " con id: " + ui.item.id);
+            traeItems(ui.item.id);
+        }
+    });
+
+    function traeItems(id) {
+        $.ajax({
+            async: true,
+            url: "/api/item/localidad/" + id,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                itemDisp.empty(); // Limpia el contenedor de items
+                for (var i = 0; i < data.length; i++) {
+                    itemDisp.append("<li class='ui-state-default' item-id><img src='"+data[i].foto+"' style='width: 30; height: 30'></img>" + data[i].nombre + "</li>");
+                }
+            },
+            error: function () {
+                console.log("Error al traer los items");
+            }
+        })
+    }
+
+    localidad.on("change", function () {
+        console.log("Localidad seleccionada: " + localidad.val());
+    })
+
+    $("#nuevaRuta").on("submit", function (e) {
+        e.preventDefault();
+        var data = $(this).serialize(); // Obtiene los datos del formulario
+        console.log(data);
+        $.ajax({
+            url: "/api/ruta",
+            type: 'POST',
+            data: data,
+            success: function (data) {
+                console.log(data);
+                alert("Ruta creada con éxito");
+            },
+            error: function () {
+                alert("Error al crear la ruta");
+            }
+        })
+    })
 
 })

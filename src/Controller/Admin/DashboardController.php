@@ -58,6 +58,7 @@ class DashboardController extends AbstractDashboardController
     {
         return parent::configureActions()
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
+            // ->update(Crud::PAGE_INDEX, '', '');
     }
 
     public function configureMenuItems(): iterable
@@ -65,9 +66,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('General');
         yield MenuItem::linkToRoute('Página Principal', 'fa fa-home', 'principal');
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Usuario::class);
+        yield MenuItem::linkToCrud('Rutas', 'fas fa-map-marked-alt', Ruta::class);
         // yield MenuItem::linkToLogout('Cerrar Sesión', 'fa fa-sign-out');
         yield MenuItem::section('FreeTour');
-        yield MenuItem::linkToRoute('Rutas', 'fas fa-map-marked-alt', 'creaRuta');
+        // yield MenuItem::linkToRoute('Rutas', 'fas fa-map-marked-alt', 'creaRuta');
         yield MenuItem::linkToCrud('Tours', 'fas fa-shoe-prints', Tour::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
