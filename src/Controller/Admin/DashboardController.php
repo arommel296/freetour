@@ -2,6 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Informe;
+use App\Entity\Item;
+use App\Entity\Reserva;
 use App\Entity\Tour;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -10,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Usuario;
 use App\Entity\Ruta;
+use App\Entity\Valoracion;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -66,12 +70,16 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('General');
         yield MenuItem::linkToRoute('Página Principal', 'fa fa-home', 'principal');
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Usuario::class);
-        yield MenuItem::linkToCrud('Rutas', 'fas fa-map-marked-alt', Ruta::class);
+        yield MenuItem::linkToRoute('Calendario', 'fa fa-calendar', 'calendario');
         // yield MenuItem::linkToLogout('Cerrar Sesión', 'fa fa-sign-out');
         yield MenuItem::section('FreeTour');
         // yield MenuItem::linkToRoute('Rutas', 'fas fa-map-marked-alt', 'creaRuta');
+        yield MenuItem::linkToCrud('Rutas', 'fas fa-map-marked-alt', Ruta::class);
         yield MenuItem::linkToCrud('Tours', 'fas fa-shoe-prints', Tour::class);
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+        yield MenuItem::linkToCrud('Items', 'fas fa-archway', Item::class);
+        yield MenuItem::linkToCrud('Reservas', 'fas fa-bookmark', Reserva::class);
+        yield MenuItem::linkToCrud('Informes', 'fas fa-flag', Informe::class);
+        yield MenuItem::linkToCrud('Valoraciones', 'fas fa-magnifying-glass-location', Valoracion::class);
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu

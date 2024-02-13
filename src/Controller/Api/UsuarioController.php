@@ -21,11 +21,11 @@ class UsuarioController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/{id}', name: 'getUsuario', methods: ['GET'])]
-    public function getUsuario(Usuario $usuario): Response
-    {
-        return new JsonResponse($usuario);
-    }
+    // #[Route('/{id}', name: 'getUsuario', methods: ['GET'])]
+    // public function getUsuario(Usuario $usuario): Response
+    // {
+    //     return new JsonResponse($usuario);
+    // }
 
     // #[Route('/{id}', name: 'getUsuario', methods: ['GET'])]
     // public function getUsuario(Usuario $usuario): RedirectResponse
@@ -48,6 +48,23 @@ class UsuarioController extends AbstractController
     // // Devuelve el usuario como JSON
     //         return new JsonResponse($usuario);
     // }
+
+    #[Route('/guias', name: 'getGuias', methods: ['GET'])]
+    public function getGuias(): JsonResponse
+    {
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+        
+        $users = [];
+        foreach($usuarios as $usuario){
+            if (in_array("ROLE_GUIA", $usuario->getRoles())) {
+                $users[] = $usuario->jsonSerialize();
+            }
+        }
+        if ($users==[]) {
+            return new JsonResponse(null, 404, $headers = ["no se han encontrado guias"]);
+        }
+        return new JsonResponse($users, 200, ["Content-Type" => "application/json"]);
+    }
 
     #[Route('/all', name: 'getUsuarios', methods: ['GET'])]
     public function getUsuarios(): JsonResponse

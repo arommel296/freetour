@@ -18,7 +18,7 @@ $(function () {
     var atras = $(".atras"); // Botón de tab anterior
     atras.hide();
     var siguiente = $(".siguiente"); // Botón de tab siguiente
-    var coord_inicio = $("#coord_inicio"); // Input de las coordenadas del punto de inicio
+    var coordInicio = $("#coord_inicio"); // Input de las coordenadas del punto de inicio
     console.log(nTabs);
     var active = $tabs.tabs("option", "active");
 
@@ -54,6 +54,7 @@ $(function () {
         minDate: new Date(),
         onSelect: function(selectedDate) {
             $('#fin').datepicker('option', 'minDate', selectedDate);
+            $('#inicioPeriodo').datepicker('option', 'minDate', selectedDate);
         }
     });
     
@@ -62,6 +63,24 @@ $(function () {
         minDate: new Date(),
         onSelect: function(selectedDate) {
             $('#inicio').datepicker('option', 'maxDate', selectedDate);
+            $('#finPeriodo').datepicker('option', 'maxDate', selectedDate);
+            $('#inicioPeriodo').datepicker('option', 'maxDate', selectedDate);
+        }
+    });
+    
+    $('#inicioPeriodo').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: new Date(),
+        onSelect: function(selectedDate) {
+            $('#finPeriodo').datepicker('option', 'minDate', selectedDate);
+        }
+    });
+    
+    $('#finPeriodo').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: new Date(),
+        onSelect: function(selectedDate) {
+            $('#inicioPeriodo').datepicker('option', 'maxDate', selectedDate);
         }
     });
 
@@ -125,10 +144,9 @@ $(function () {
             height: 650,
         });
 
-        coord_inicio.on("click", function () {
+        coordInicio.on("click", function () {
             creaMapa();
-
-    })
+        })
 
     function creaMapa() {
         $("#mapaDialog").dialog("open");
@@ -153,8 +171,8 @@ $(function () {
 
             console.log("punto puesto clicando");
             // Pone las coordenadas del marker en el input
-            coord_inicio.val(e.latlng.lat + ', ' + e.latlng.lng);
-            console.log(coord_inicio.val());
+            coordInicio.val(e.latlng.lat + ', ' + e.latlng.lng);
+            console.log(coordInicio.val());
         });
 
         function buscarPorCiudad(event) {
@@ -180,8 +198,8 @@ $(function () {
                         // Pone las coordenadas del marker en el input
                         marker.setLatLng([lat, lon]);
                         console.log("punto puesto buscando por nombre");
-                        coord_inicio.val(lat + ', ' + lon);
-                        console.log(coord_inicio.val());
+                        coordInicio.val(lat + ', ' + lon);
+                        console.log(coordInicio.val());
                     } else {
                         alert("No se encontró la ciudad.");
                     }
@@ -199,11 +217,7 @@ $(function () {
         
     }
     
-
-
-    // Función 
-    
-
+    let tablaTours = new DataTable($("#tablaTours"));
     
 
     $("#sortable1, #sortable2").sortable({
@@ -211,25 +225,6 @@ $(function () {
         placeholder: "placeholder"
     }).disableSelection();
 
-    // var localidades = $.ajax({
-    //     url: "http://127.0.0.1:8000/api/localidad/favoritas",
-    //     type: 'GET',
-    //     dataType: 'json',
-    //     success: function (data) {
-
-    //     },
-    //     error: function () {
-
-    //     }
-    // })
-
-    // $("#localidad").autocomplete({
-    //     source: "localidades.txt",
-    //     minLength: 2,
-    //     select: function (event, ui) {
-    //         log("Selected: " + ui.item.value + " aka " + ui.item.id);
-    //     }
-    // });
 
     var localidad = $("#localidad");
     var itemDisp = $("#sortable1");
@@ -269,6 +264,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 console.log(data);
+                $("#sortable2").empty();
                 itemDisp.empty(); // Limpia el contenedor de items
                 for (var i = 0; i < data.length; i++) {
                     itemDisp.append("<li class='ui-state-default' item-id><img src='"+data[i].foto+"' style='width: 30; height: 30'></img>" + data[i].nombre + "</li>");
@@ -284,8 +280,81 @@ $(function () {
         console.log("Localidad seleccionada: " + localidad.val());
     })
 
+    // var foto = $("#subeFotos").on("drop", function (event) {
+    //     var foto = event.dataTransfer.files[0];
+    // })
+
+    // $('.input-images').on('change', function() {
+    //     // Obtenemos la imagen en base64
+    //     alert("aaaa")
+    //     let imgBase64 = $('.input-images img').attr('src');
+    
+    //     console.log(imgBase64);
+    //     // Creamos un objeto FormData
+    //     let formData = new FormData();
+    
+    //     // Añadimos la imagen al objeto FormData
+    //     formData.append('Foto', imgBase64);
+    
+    //     // Enviamos la imagen al servidor
+    //     $.ajax({
+    //         url: '/ruta/del/servidor',
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false,  // Indicamos a jQuery que no procese los datos
+    //         contentType: false   // Indicamos a jQuery que no establezca el contentType
+    //     })
+    //     .done(function(data) {
+    //         console.log(data);
+    //     })
+    //     .fail(function(error) {
+    //         console.error(error);
+    //     });
+    // });
+
+    var fotos = $("#subeFotos img").attr('src');
+    // Hacemos una solicitud HTTP para obtener el Blob
+fetch(fotos)
+.then(response => response.blob())
+.then(blob => {
+    // Creamos un objeto File a partir del Blob
+    let file = new File([blob], 'nombre-de-la-imagen.jpg', {type: 'image/jpeg'});
+
+    // Creamos un objeto FormData
+    let formData = new FormData();
+
+    // Añadimos la imagen al objeto FormData
+    formData.append('Foto', file);
+
+    // Enviamos la imagen al servidor
+    $.ajax({
+        url: '/ruta/del/servidor',
+        type: 'POST',
+        data: formData,
+        processData: false,  // Indicamos a jQuery que no procese los datos
+        contentType: false   // Indicamos a jQuery que no establezca el contentType
+    })
+    .done(function(data) {
+        console.log(data);
+    })
+    .fail(function(error) {
+        console.error(error);
+    });
+})
+.catch(error => console.error(error));
+
     $("#nuevaRuta").on("submit", function (e) {
         e.preventDefault();
+
+        //Recogida de datos de la ruta
+        var titulo = $("#titulo").val();
+        console.log(titulo);
+        var descripcion = $("#descripcion").val();
+        console.log(descripcion);
+        // var fotos = $("#subeFotos img")[0].src;
+        console.log(fotos);
+        var fotosB64 = fot
+
         var data = $(this).serialize(); // Obtiene los datos del formulario
         console.log(data);
         $.ajax({
@@ -301,5 +370,89 @@ $(function () {
             }
         })
     })
+
+    var selectGuia = $("#guia");
+
+    $.ajax({
+        url: "/api/usuario/guias", //ruta de la api
+        type: 'GET',
+        dataType: "json", //tipo de datos que se espera
+        success: function(data) {
+            selectGuia.empty();
+            for (var i = 0; i < data.length; i++) {
+                selectGuia.append("<option value='" + data[i].nombre +"'>" + data[i].nombre +"</option>");
+            }
+        },
+        error: function () {
+            console.log("Error al traer los items");
+        }
+    });
+
+    console.log("eee");
+    //Datos para enviar a la api y crear la ruta
+    
+
+    function guardaRuta() {
+        var titulo = $('#titulo').val();
+        var descripcion = $('#descripcion').html();
+        const fileInput = $('.image-uploader input[type="file"]');
+        const file = fileInput[0].files[0];
+        var coord_inicio = $('#coord_inicio').val();
+        var aforo = $('#aforo').val();
+        var inicio = $('#inicio').val();
+        var fin = $('#fin').val();
+        var items = [];
+        $('#sortable2 li').each(function () {
+            items.push($(this).data('id'));
+        });
+
+        const formData = new FormData();
+        formData.append('foto', file, file.name);
+        formData.append('nombre', titulo);
+        formData.append('descripcion', descripcion);
+        formData.append('coord_inicio', coord_inicio);
+        formData.append('aforo', aforo);
+        formData.append('inicio', inicio);
+        formData.append('fin', fin);
+        formData.append('items', JSON.stringify(items));
+
+        console.log("formdata" + formData.get("foto"));
+
+        var data = {
+            nombre: titulo,
+            descripcion: descripcion,
+            coord_inicio: coordInicio,
+            aforo: aforo,
+            inicio: inicio,
+            fin: fin,
+            items: items,
+            foto: file
+        };
+
+        $.ajax({
+            url: '', 
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function(response) {
+                
+            },
+            error: function(error) {
+                
+            }
+        });
+    }
+
+    // {
+    //     console.log(data);
+    //     itemDisp.empty(); // Limpia el contenedor de items
+    //     for (var i = 0; i < data.length; i++) {
+    //         itemDisp.append("<li class='ui-state-default' item-id><img src='"+data[i].foto+"' style='width: 30; height: 30'></img>" + data[i].nombre + "</li>");
+    //     }
+    // },
+    // error: function () {
+    //     console.log("Error al traer los items");
+    // }
+
 
 })

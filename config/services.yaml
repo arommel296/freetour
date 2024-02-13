@@ -26,3 +26,11 @@ services:
             $adminEmail: 'freetour@freetour.es'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # App\EventSubscriber\RequestSubscriber:
+    # App\EventSubscriber\LoginSubscriber:
+    # App\EventSubscriber\RegisterSubscriber:
+    # RegisterSubscriber:
+    #     class: App\EventSubscriber\RegisterSubscriber
+    #     tags:
+    #         - { name: doctrine.event_listener, event: prePersist }

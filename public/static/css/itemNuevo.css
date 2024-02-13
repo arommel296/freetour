@@ -90,7 +90,7 @@ img{
     border-radius: 4px;
 }
 
-#nuevaRuta{
+#itemNuevo{
     height: 90%;
 }
 
@@ -101,7 +101,3 @@ img{
 #tabs{
     height: 90%;
 }
-
-/* i, input[type="submit"] {
-    color: #ea5757;
-} */

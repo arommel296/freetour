@@ -1,0 +1,25 @@
+{% include '@EasyAdmin/page/content.html.twig' %}
+
+<div id="calendario">
+    <html lang='es'>
+
+    <head>
+        <meta charset='utf-8' />
+        {# enlaces confiables para Jquery y Jquery UI  #}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css" />
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        {# enlace para full calendar  #}
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+        {# enlace para el js #}
+        <script src="{{ asset('static/js/calendarioAdmin.js')}}" charset="UTF-8"></script>
+        {# enlace para el css #}
+        <link rel="stylesheet" href="{{ asset('static/css/calendario.css')}}" />
+    </head>
+
+    <body>
+        <div id='calendar'></div>
+    </body>
+
+    </html>
+</div>
