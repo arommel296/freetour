@@ -24,10 +24,12 @@ class ItemCrudController extends AbstractCrudController
         return Item::class;
     }
 
-    // public function configureFields(string $pageName): iterable
-    // {
-    //     // return [];
-    // }
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            
+        ];
+    }
 
     public function configureActions(Actions $actions): Actions
     {

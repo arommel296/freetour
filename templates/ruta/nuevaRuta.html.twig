@@ -66,15 +66,16 @@
 					<div class="row mb-3">
 						<div class="col">
 							{# <div class="mb-3"> #}
-								<label for="descripcion" class="form-label">Descripción</label>
-								<div id="descripcion"></div>
+							<label for="descripcion" class="form-label">Descripción</label>
+							{# <textarea name="descripcion" id="descripcion"></textarea> #}
+							<div id="descripcion"></div>
 							{# </div> #}
 						</div>
 						<div class="col">
 							{# <div class="mb-3"> #}
-								<label for="foto" class="form-label">Imagen</label>
-								<div class="input-images" id="subeFotos"></div>
-								{# <input type="file" id="sueltaFoto" name="foto"></input> #}
+							<label for="foto" class="form-label">Imagen</label>
+							<div class="input-images" id="subeFotos"></div>
+							{# <input type="file" id="sueltaFoto" name="foto"></input> #}
 							{# </div> #}
 						</div>
 					</div>
@@ -149,7 +150,7 @@
 
 							</div>
 							<div class="col-12 col-md-2">
-								
+
 							</div>
 
 							<div class="col-12 col-md-5 border itemRuta" style="height: 400px; border-radius: 5px">
@@ -173,6 +174,12 @@
 
 							</div>
 						</div>
+						<div class="row mt-1">
+							<div class="d-flex justify-content-around col-12">
+								<button id="itemNuevo" class="btn btn-primary">Crear Item</button>
+								{# <button id="buscaLocalidad" class="btn btn-primary text-align-center">Buscar</button> #}
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="tabs-3" class="mt-1 p-1 border rounded">
@@ -180,43 +187,50 @@
 						<label class="form-label">Días del tour</label>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="lunes" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="lunes"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="lunes">Lunes</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="martes" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="martes"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="martes">Martes</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="miercoles" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="miercoles"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="miercoles">Miércoles</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="jueves" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="jueves"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="jueves">Jueves</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="viernes" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="viernes"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="viernes">Viernes</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="sabado" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="sabado"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="sabado">Sábado</label>
 							</div>
 						</div>
 						<div class="col">
 							<div class="mb-3">
-								<input type="checkbox" class="btn-check" name="options-outlined" id="domingo" autocomplete="off">
+								<input type="checkbox" class="btn-check" name="options-outlined" id="domingo"
+									autocomplete="off">
 								<label class="btn btn-outline-danger" for="domingo">Domingo</label>
 							</div>
 						</div>
@@ -249,26 +263,32 @@
 							</div>
 						</div>
 					</div>
+					<div class="row mb-1"><button id="add" class="btn btn-primary">Añadir</button></div>
 					<div class="row mb-1">
 						<div class="col">
 							<div class="mb-3">
-								<table id="tablaTours" class="form-control">
-									<thead>
-										<th>
-											Fecha
-										</th>
-										<th>
-											Fecha Fin
-										</th>
-										<th>
-											Hora
-										</th>
-										<th>
-											Días
-										</th>
-										<th>
-											Guía
-										</th>
+								<table id="tablaTours" class="form-control row">
+									<thead class="col">
+										<tr>
+											<th>
+												Fecha Inicio
+											</th>
+											<th>
+												Fecha Fin
+											</th>
+											<th>
+												Hora
+											</th>
+											<th>
+												Días
+											</th>
+											<th>
+												Guía
+											</th>
+											<th>
+												Acciones
+											</th>
+										</tr>
 									</thead>
 								</table>
 							</div>
@@ -294,7 +314,7 @@
 					</div> #}
 					<div class="botonera"></div>
 					<div class="botonera">
-						<input type="submit" value="Guardar Ruta" class="btn btn-primary" id="creaRuta">
+						<input type="button" value="Guardar Ruta" class="btn btn-primary" id="creaRuta">
 					</div>
 					<div class="botonera"></div>
 				</div>

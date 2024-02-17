@@ -105,3 +105,8 @@ img{
 /* i, input[type="submit"] {
     color: #ea5757;
 } */
+
+.dataTables_length, .dataTables_filter{
+    display: none;
+}
+

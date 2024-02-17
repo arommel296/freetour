@@ -211,6 +211,11 @@ class Ruta implements JsonSerializable
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->getNombre();
+    }
+
     public function jsonSerialize(): array
     {
         return [

@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 
 class RutaCrudController extends AbstractCrudController
 {
@@ -27,30 +28,31 @@ class RutaCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // return [
-        //     TextField::new('nombre'),
-        //     TextEditorField::new('descripcion')
-        //         ->setFormTypeOptions([
-        //             'attr' => ['maxlength' => 1000]
-        //         ]),
-        //     DateField::new('inicio'),
-        //     DateField::new('fin'),
-        //     IntegerField::new('aforo'),
-        //     ChoiceField::new('coord_inicio')->setChoices(function () {
-        //         $listaItems = [];
-        //         $items = $this->entityManager->getRepository(Item::class)->findAll();
-        //         foreach ($items as $item) {
-        //             $listaItems[$item->getNombre()] = $item->getId();
-        //         }
-        //         return $listaItems;
-        //     }),
-        //     ImageField::new('foto')
-        //         ->setBasePath('fotos/')
-        //         ->setUploadDir('public/fotos')
-        //         ->setUploadedFileNamePattern('[randomhash].[extension]'),
-        // ];
-        return [];
-    }
+        return [
+            // TextField::new('nombre'),
+            // TextEditorField::new('descripcion')
+            //     ->setFormTypeOptions([
+            //         'attr' => ['maxlength' => 1000]
+            //     ]),
+            // DateField::new('inicio'),
+            // DateField::new('fin'),
+            // IntegerField::new('aforo'),
+            // ChoiceField::new('coord_inicio')->setChoices(function () {
+            //     $listaItems = [];
+            //     $items = $this->entityManager->getRepository(Item::class)->findAll();
+            //     foreach ($items as $item) {
+            //         $listaItems[$item->getNombre()] = $item->getId();
+            //     }
+            //     return $listaItems;
+            // }),
+            ImageField::new('foto')
+                ->setBasePath('fotos/')
+                // ->setUploadDir('public/fotos')
+                // ->setUploadedFileNamePattern('[randomhash].[extension]'),
+            
+        ];
+        // return [];
+     }
 
     public function configureActions(Actions $actions): Actions
     {

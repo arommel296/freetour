@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Ruta;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,4 +46,20 @@ class RutaRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findMejoresRutas(): array
+    {
+        // return $this->createQueryBuilder('v')
+        $a = $this->createQueryBuilder('r');
+
+        $a->select('r.id AS ruta_id, AVG(v.valor) AS media') 
+            ->join('r.tours', 't')
+            ->join('t.reservas', 're')
+            ->join('re.valoraciones', 'v')
+            ->groupBy('r.id')
+            ->orderBy('media', 'DESC');
+
+        return $a->getQuery()->getResult();
+    }
+
 }

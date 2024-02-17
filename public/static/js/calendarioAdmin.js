@@ -17,25 +17,27 @@ $(function () {
         {id: 1, title: "Tour Centro", start:"2024-02-13T10:30:00", extendedProps:  {nombreGuia: "Juan", numeroParticipantes: "10/20"}},
         {id: 2, title: "Tour Castillo", start:"2024-02-13T10:30:00", extendedProps:  {nombreGuia: "Pepe", numeroParticipantes: "12/20"}}],
     editable: true,
-    dayMaxEvents: true, // when too many events in a day, show the popover
-    // events: '/api/demo-feeds/events.json?overload-day'
+    dayMaxEvents: true,
     eventContent: function(arg) {
-        // Create a new element to display the event details
         var el = document.createElement('div');
         el.innerHTML = arg.event.title + ' ' + arg.event.start.toISOString().slice(11,16)+ '<br>' +
-                    //    arg.event.start.toISOString().slice(11,16) + '<br>' +
                        (arg.event.extendedProps.nombreGuia || '') + ' ' +
                        (arg.event.extendedProps.numeroParticipantes || '');
         return { html: el.outerHTML };
     },
-    height: 'auto'
+    // height: 'auto'
   });
-
-
 
   calendar.render();
 
-  function cargaTours() {
+  cargaTours();
+
+
+
+
+})
+
+function cargaTours() {
     $.ajax({
         url: "/api/tours",
         method: "GET",
@@ -59,8 +61,3 @@ $(function () {
         }
     });
   }
-
-
-
-
-})

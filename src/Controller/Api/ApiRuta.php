@@ -10,21 +10,37 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Usuario;
 use App\Entity\Localidad;
 use App\Entity\Ruta;
+use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 #[Route('/api/ruta')]
 class ApiRuta extends AbstractController
 {
     private $entityManager;
-    public function __construct(EntityManagerInterface $entityManager) {
+    private $fileUploaderService;
+    public function __construct(EntityManagerInterface $entityManager, FileUploaderService $fileUploaderService) {
         $this->entityManager = $entityManager;
+        $this->fileUploaderService = $fileUploaderService;
     }
 
     #[Route('/all', name: 'getRutas', methods: ['GET'])]
     public function getRutas(): Response
     {
-        $rutas = $this->entityManager->getRepository(Localidad::class)->findAll();
+        $rutas = $this->entityManager->getRepository(Ruta::class)->findAll();
+        $rutasJson = json_encode($rutas);
+        if ($rutasJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
+        }
+        return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
+    #[Route('/pagina', name: 'getPaginaRutas', methods: ['GET'])]
+    public function getPaginaRutas(): Response
+    {
+        $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
         $rutasJson = json_encode($rutas);
         if ($rutasJson == null) {
             return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
@@ -33,7 +49,7 @@ class ApiRuta extends AbstractController
     }
 
     #[Route('/localidad/{id}', name: 'getRutasByLocalidad', methods: ['GET'])]
-    public function getRutasByLocalidad(Localidad $localidad): Response
+    public function getRutasByLocalidad(Localidad $localidad): JsonResponse
     {
         $items = $this->entityManager->getRepository(Item::class)->findBy(['localidad' => $localidad]);
 
@@ -58,30 +74,51 @@ class ApiRuta extends AbstractController
     }
 
     #[Route('/guardaRuta', name: 'guardaRuta', methods: ['POST'])]
-    public function creaRuta(): Response
+    public function creaRuta(HttpFoundationRequest $request): Response
     {
         try {
-            $data = json_decode(file_get_contents('php://input'), true);
-            $ruta = new Ruta();
-            $ruta->setNombre($data['nombre']);
-            $ruta->setCoordInicio($data['coordInicio']);
-            $ruta->setDescripcion($data['descripcion']);
-            $ruta->setFoto($data['foto']);
-            $ruta->setInicio(new \DateTime($data['inicio']));
-            $ruta->setFin(new \DateTime($data['fin']));
-            $ruta->setAforo($data['aforo']);
-            $ruta->setProgramacion($data['programacion']);
-            // Añade cada item a la ruta
-            foreach ($data['items'] as $itemId) {
-                $item = $this->entityManager->getRepository(Item::class)->find($itemId);
-                $ruta->addItem($item);
-            }
-            $this->entityManager->persist($ruta);
-            $this->entityManager->flush();
-            return new JsonResponse($ruta->jsonSerialize(), 201, $headers = ["Content-Type" => "application/json"]);
+            $data = $request->getContent();
+            // var_dump($request->request->all());
+
+            // if ($data) {
+                $foto = $request->files->get('foto');
+                $nombre = $request->request->get('nombre');
+                $coordInicio = $request->request->get('coordInicio');
+                $descripcion = $request->request->get('descripcion');
+                $inicio = $request->request->get('inicio');
+                $fin = $request->request->get('fin');
+                $aforo = $request->request->get('aforo');
+                $programacion = json_decode($request->request->get('programacion'), true);
+                $items = json_decode($request->request->get('items'), true);
+
+                //Se sube el fichero al servidor
+                $fileName = $this->fileUploaderService->upload($foto);
+
+                //Creación de ruta nueva
+                $ruta = new Ruta();
+                $ruta->setNombre($nombre);
+                $ruta->setCoordInicio($coordInicio);
+                $ruta->setDescripcion($descripcion);
+                $ruta->setFoto($fileName);
+                $ruta->setInicio(new \DateTime($inicio));
+                $ruta->setFin(new \DateTime($fin));
+                $ruta->setAforo($aforo);
+                $ruta->setProgramacion($programacion);
+                // Añade cada item a la ruta
+                foreach ($items as $itemId) {
+                    $item = $this->entityManager->getRepository(Item::class)->find($itemId);
+                    $ruta->addItem($item);
+                }
+                $this->entityManager->persist($ruta);
+                $this->entityManager->flush();
+                return new JsonResponse($ruta->jsonSerialize(), 201, $headers = ["Content-Type" => "application/json"]);
+            // } else{
+            //     throw new \Exception('No se han recibido datos');
+            // }
+
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], 400);
         }
-        
+
     }
 }

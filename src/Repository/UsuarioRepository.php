@@ -63,4 +63,14 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findUsersByRole($role){
+        $qb = $this->createQueryBuilder('usuario');
+        $qb->select('usuario')
+        ->where('usuario.roles like :roles')
+        ->setParameter('roles', $role);
+        
+        return $qb->getQuery()->getResult();
+    }
+
 }

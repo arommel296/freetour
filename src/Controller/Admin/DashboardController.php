@@ -68,7 +68,8 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('General');
-        yield MenuItem::linkToRoute('Página Principal', 'fa fa-home', 'principal');
+        yield MenuItem::linkToRoute('FrontEnd', 'fa fa-home', 'principal');
+        yield MenuItem::linkToRoute('Principal', 'fa fa-hammer', 'admin');
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', Usuario::class);
         yield MenuItem::linkToRoute('Calendario', 'fa fa-calendar', 'calendario');
         // yield MenuItem::linkToLogout('Cerrar Sesión', 'fa fa-sign-out');
