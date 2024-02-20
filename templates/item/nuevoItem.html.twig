@@ -79,9 +79,10 @@
                             {# <button id="buscaLocalidad" class="btn btn-primary text-align-center form-control">Buscar</button> #}
                         </div>
 						<div class="col">
-							<label for="coord_inicio" class="form-label">Coordenadas del item</label>
-							<input type="text" class="form-control" id="coordenadas"
+							<label for="coordenadas" class="form-label">Coordenadas del item</label>
+							<input type="hidden" class="form-control" id="coordenadas"
 								placeholder="Click para desplegar el mapa">
+							<span class="form-control" id="coordUsable">Click para desplegar el mapa</span>
 							<div id="mapaDialog">
 								<div id="mapid" style="height: 400px;"></div>
 								<div>

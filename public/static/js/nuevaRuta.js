@@ -143,11 +143,20 @@ $(function () {
         },
         width: 700,
         height: 650,
+        buttons: {
+            Volver: function() {
+            $("#mapaDialog").dialog( "close" );
+            }
+        },
     });
 
-    coordInicio.on("click", function () {
+    var coordUsable = $("#coordUsable")
+    coordUsable.on("click", function () {
         creaMapa();
     })
+    // coordInicio.on("click", function () {
+    //     creaMapa();
+    // })
 
     function creaMapa() {
         $("#mapaDialog").dialog("open");
@@ -173,6 +182,7 @@ $(function () {
             console.log("punto puesto clicando");
             // Pone las coordenadas del marker en el input
             coordInicio.val(e.latlng.lat + ', ' + e.latlng.lng);
+            coordUsable.text("Punto establecido en el mapa ✔️");
             console.log(coordInicio.val());
         });
 
@@ -200,6 +210,7 @@ $(function () {
                         marker.setLatLng([lat, lon]);
                         console.log("punto puesto buscando por nombre");
                         coordInicio.val(lat + ', ' + lon);
+                        coordUsable.text("Punto establecido en el mapa ✔️");
                         console.log(coordInicio.val());
                     } else {
                         alert("No se encontró la ciudad.");
@@ -375,99 +386,6 @@ $(function () {
         console.log("Localidad seleccionada: " + localidad.val());
     })
 
-    // var foto = $("#subeFotos").on("drop", function (event) {
-    //     var foto = event.dataTransfer.files[0];
-    // })
-
-    // $('.input-images').on('change', function() {
-    //     // Obtenemos la imagen en base64
-    //     alert("aaaa")
-    //     let imgBase64 = $('.input-images img').attr('src');
-
-    //     console.log(imgBase64);
-    //     // Creamos un objeto FormData
-    //     let formData = new FormData();
-
-    //     // Añadimos la imagen al objeto FormData
-    //     formData.append('Foto', imgBase64);
-
-    //     // Enviamos la imagen al servidor
-    //     $.ajax({
-    //         url: '/ruta/del/servidor',
-    //         type: 'POST',
-    //         data: formData,
-    //         processData: false,  // Indicamos a jQuery que no procese los datos
-    //         contentType: false   // Indicamos a jQuery que no establezca el contentType
-    //     })
-    //     .done(function(data) {
-    //         console.log(data);
-    //     })
-    //     .fail(function(error) {
-    //         console.error(error);
-    //     });
-    // });
-
-    // var fotos = $("#subeFotos img").attr('src');
-    // // Hacemos una solicitud HTTP para obtener el Blob
-    // fetch(fotos)
-    //     .then(response => response.blob())
-    //     .then(blob => {
-    //         // Creamos un objeto File a partir del Blob
-    //         let file = new File([blob], 'nombre-de-la-imagen.jpg', {
-    //             type: 'image/jpeg'
-    //         });
-
-    //         // Creamos un objeto FormData
-    //         let formData = new FormData();
-
-    //         // Añadimos la imagen al objeto FormData
-    //         formData.append('Foto', file);
-
-    //         // Enviamos la imagen al servidor
-    //         $.ajax({
-    //                 url: '/ruta/del/servidor',
-    //                 type: 'POST',
-    //                 data: formData,
-    //                 processData: false, // Indicamos a jQuery que no procese los datos
-    //                 contentType: false // Indicamos a jQuery que no establezca el contentType
-    //             })
-    //             .done(function (data) {
-    //                 console.log(data);
-    //             })
-    //             .fail(function (error) {
-    //                 console.error(error);
-    //             });
-    //     })
-    //     .catch(error => console.error(error));
-
-    // $("#nuevaRuta").on("submit", function (e) {
-    //     e.preventDefault();
-
-    //     //Recogida de datos de la ruta
-    //     var titulo = $("#titulo").val();
-    //     console.log(titulo);
-    //     var descripcion = $("#descripcion").val();
-    //     console.log(descripcion);
-    //     // var fotos = $("#subeFotos img")[0].src;
-    //     console.log(fotos);
-    //     var fotosB64 = fot;
-
-    //     var data = $(this).serialize(); // Obtiene los datos del formulario
-    //     console.log(data);
-    //     $.ajax({
-    //         url: "/api/ruta",
-    //         type: 'POST',
-    //         data: data,
-    //         success: function (data) {
-    //             console.log(data);
-    //             alert("Ruta creada con éxito");
-    //         },
-    //         error: function () {
-    //             alert("Error al crear la ruta");
-    //         }
-    //     })
-    // })
-
     var selectGuia = $("#guia");
 
     $.ajax({
@@ -487,9 +405,6 @@ $(function () {
 
     console.log("eee");
     
-    
-
-
     $("#creaRuta").on("click", function (ev) {
         ev.preventDefault();
         console.log("hola?");
@@ -504,8 +419,8 @@ function guardaRuta() {
         //Datos para enviar a la api y crear la ruta
         var titulo = $('#titulo').val();
         var descripcion = $('#descripcion').jqxEditor('val');
-        const fileInput = $('.image-uploader input[type="file"]');
-        const file = fileInput[0].files[0];
+        const fotoInput = $('.image-uploader input[type="file"]');
+        const foto = fotoInput[0].files[0];
         var coordInicio = $('#coord_inicio').val();
         var aforo = $('#aforo').val();
         var inicio = $('#inicio').val();
@@ -515,12 +430,12 @@ function guardaRuta() {
             items.push($(this).attr('item-id'));
             console.log($(this).attr('item-id'));
         });
-        var programacion = 
+        var programacion ;
 
-        console.log(file);
+        console.log(foto);
         // console.log($('#sortable2 li')[0].attr('item-id'));
         var formData = new FormData();
-        formData.append('foto', file, file.name);
+        formData.append('foto', foto, foto.name);
         formData.append('nombre', titulo);
         formData.append('descripcion', descripcion);
         formData.append('coordInicio', coordInicio);

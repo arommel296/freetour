@@ -26,33 +26,33 @@ class RutaCrudController extends AbstractCrudController
         $this->entityManager = $entityManager;
     }
 
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            // TextField::new('nombre'),
-            // TextEditorField::new('descripcion')
-            //     ->setFormTypeOptions([
-            //         'attr' => ['maxlength' => 1000]
-            //     ]),
-            // DateField::new('inicio'),
-            // DateField::new('fin'),
-            // IntegerField::new('aforo'),
-            // ChoiceField::new('coord_inicio')->setChoices(function () {
-            //     $listaItems = [];
-            //     $items = $this->entityManager->getRepository(Item::class)->findAll();
-            //     foreach ($items as $item) {
-            //         $listaItems[$item->getNombre()] = $item->getId();
-            //     }
-            //     return $listaItems;
-            // }),
-            ImageField::new('foto')
-                ->setBasePath('fotos/')
-                // ->setUploadDir('public/fotos')
-                // ->setUploadedFileNamePattern('[randomhash].[extension]'),
+    // public function configureFields(string $pageName): iterable
+    // {
+    //     return [
+    //         // TextField::new('nombre'),
+    //         // TextEditorField::new('descripcion')
+    //         //     ->setFormTypeOptions([
+    //         //         'attr' => ['maxlength' => 1000]
+    //         //     ]),
+    //         // DateField::new('inicio'),
+    //         // DateField::new('fin'),
+    //         // IntegerField::new('aforo'),
+    //         // ChoiceField::new('coord_inicio')->setChoices(function () {
+    //         //     $listaItems = [];
+    //         //     $items = $this->entityManager->getRepository(Item::class)->findAll();
+    //         //     foreach ($items as $item) {
+    //         //         $listaItems[$item->getNombre()] = $item->getId();
+    //         //     }
+    //         //     return $listaItems;
+    //         // }),
+    //         ImageField::new('foto')
+    //             ->setBasePath('fotos/')
+    //             // ->setUploadDir('public/fotos')
+    //             // ->setUploadedFileNamePattern('[randomhash].[extension]'),
             
-        ];
-        // return [];
-     }
+    //     ];
+    //     // return [];
+    //  }
 
     public function configureActions(Actions $actions): Actions
     {
@@ -71,7 +71,7 @@ class RutaCrudController extends AbstractCrudController
     public function nuevaRuta(): Response
     {
         return $this->render('ruta/nuevaRuta.html.twig');
-    }    
+    }
 }    
 
 

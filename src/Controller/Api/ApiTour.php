@@ -22,7 +22,7 @@ class ApiTour extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/{id}', name: 'getTour', methods: ['GET'])]
+    #[Route('/unico/{id}', name: 'getTour', methods: ['GET'])]
     public function getTour(Tour $tour): Response
     {
         $tr = $tour->getId();
@@ -37,12 +37,18 @@ class ApiTour extends AbstractController
     #[Route('/all', name: 'getTours', methods: ['GET'])]
     public function getTours(): Response
     {
-        $tours = $this->entityManager->getRepository(Localidad::class)->findAll();
-        $toursJson = json_encode($tours);
+        $tours = $this->entityManager->getRepository(Tour::class)->findAll();
+
+        $toursJson = [];
+        foreach ($tours as $tour) {
+            $toursJson[] = $tour->jsonSerialize();
+        }
+
+        // $toursJson = json_encode($tours);
         if ($toursJson == null) {
             return new Response(null, 404, $headers = ["no se han encontrado tours"]);
         }
-        return new Response($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
+        return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
     #[Route('/guia/{id}', name: 'getToursByGuia', methods: ['GET'])]

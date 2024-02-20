@@ -2887,3 +2887,10 @@ section {
   color: var(--contrast-color);
   background-color: rgba(var(--primary-color-rgb), 0.8);
 }
+
+.carousel-item img {
+  object-fit: contain; /* Preserve aspect ratio and fit within the box */
+  max-height: 400px; /* Set a maximum height */
+  /* width: auto; Allow the width to adjust to maintain aspect ratio */
+  margin: auto; /* Center the image */
+}

@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FreeTours.es{% endblock %}
+
+{% block body %}
+<body class="index-page" data-bs-spy="scroll" data-bs-target="#navmenu">
+    <script src="{{ asset('static/js/pagination.min.js')}}"></script>
+    <script src="{{ asset('static/js/listaRutas.js')}}"></script>
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+    
+          <a href="{{path('principal')}}" class="logo d-flex align-items-center me-auto me-xl-0">
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            <h1>Freetours.es</h1>
+            <span></span>
+          </a>
+    
+          <!-- Nav Menu -->
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{path('principal')}}" class="active"><img src="{{ asset('static/img/casaroja.png') }}"
+                    alt="Inicio" class="icono" width="28px" height="28px">Inicio</a></li>
+              {% if is_granted('ROLE_ADMIN') %}
+              <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/configuracionroja.png') }}"
+                    alt="Inicio" class="icono" width="28px" height="28px">Panel de Administrador</a>
+              </li>
+              {% endif %}
+              {# {% if is_granted('ROLE_GUIA') %}
+              <li><a href="{{path('guia')}}" class="">Panel de Guía</a></li>
+              {% endif %} #}
+              <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio"
+                    class="icono" width="28px" height="28px">Todas las ciudades</a></li>
+            </ul>
+    
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav><!-- End Nav Menu -->
+          {% if app.user %}
+          <div class="navmenu">
+    
+            <ul>
+              <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
+                <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                  <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}" alt="Inicio"
+                        class="icono" width="28px" height="28px">Mi Perfil</a></li>
+                  <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}" alt="Inicio"
+                        class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
+                </ul>
+              </li>
+            </ul>
+    
+          </div>
+          {% else %}
+          <div>
+            <a class="btn-getstarted" href="{{path('app_login')}}"><img
+                src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
+                height="28px"><span>Iniciar Sesión</span></a>
+            <a class="btn-getstarted" href="{{path('app_register')}}"><img
+                src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
+                height="28px"><span>Registrarse</span></a>
+          </div>
+          {% endif %}
+    
+        </div>
+      </header><!-- End Header -->
+
+      <main id="main">
+        <div class="row">
+            <div class="col">
+                <div id="pagination">
+
+                </div>
+            </div>
+        </div>
+      </main>
+</body>
+{% endblock %}

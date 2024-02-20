@@ -3,13 +3,65 @@
 {% block title %}Registro{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
 
-    <h1>Registro</h1>
+<header id="header" class="header fixed-top d-flex align-items-center always-show-shadow"
+    style="box-shadow: 0 0 30px 10px rgba(0, 0, 0, 0.1);">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
 
-    {{ form_errors(registrationForm) }}
+        <a href="{{path('principal')}}" class="logo d-flex align-items-center me-auto me-xl-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            <h1>Freetours.es</h1>
+            <span></span>
+        </a>
+
+        <!-- Nav Menu -->
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{{path('principal')}}" class="active"><img src="{{ asset('static/img/casaroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Inicio</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/configuracionroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Panel de Administrador</a>
+                </li>
+                {% endif %}
+                {% if is_granted('ROLE_GUIA') %}
+                <li><a href="{{path('guia')}}" class="">Panel de Guía</a></li>
+                {% endif %}
+                <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Todas las ciudades</a></li>
+            </ul>
+
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav><!-- End Nav Menu -->
+        {% if app.user %}
+        <div class="navmenu">
+
+            <ul>
+                <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
+                    <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}"
+                                    alt="Inicio" class="icono" width="28px" height="28px">Mi Perfil</a></li>
+                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}"
+                                    alt="Inicio" class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+        {% endif %}
+
+    </div>
+</header><!-- End Header -->
+
+
+{% for flash_error in app.flashes('verify_email_error') %}
+<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+{% endfor %}
+
+{# <h1>Registro</h1> #}
+
+{# {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.email) }}
@@ -19,13 +71,53 @@
         {{ form_row(registrationForm.plainPassword, {
             label: 'Contraseña'
         }) }}
-        {# {{ form_row(registrationForm.plainPassword, {
-            label: 'Repetir Contraseña'
-        }) }} #}
         {{ form_row(registrationForm.agreeTerms,{
             label: 'Aceptar términos'
         }) }}
 
         <button type="submit" class="btn">Registrarse</button>
-    {{ form_end(registrationForm) }}
+    {{ form_end(registrationForm) }} #}
+
+<div class="container form-container" style="margin-top: 150px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card">
+                <h3 class="text-center mt-4">Registrarse</h3>
+                <div class="card-body">
+                    {{ form_start(registrationForm, {'attr': {'class': 'form'}}) }}
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.email, 'Correo Electrónico') }}
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.nombre, 'Nombre') }}
+                        {{ form_widget(registrationForm.nombre, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.apellidos, 'Apellidos') }}
+                        {{ form_widget(registrationForm.apellidos, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.foto, 'Foto') }}
+                        {{ form_widget(registrationForm.foto, {'attr': {'class': 'form-control-file'}}) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.plainPassword.first, 'Contraseña') }}
+                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form_label(registrationForm.plainPassword.second, 'Repetir Contraseña') }}
+                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary mb-3">Registrarse</button>
+                        <p>¿Ya tienes una cuenta? <a href="{{ path('app_login') }}">Iniciar Sesión</a></p>
+                    </div>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

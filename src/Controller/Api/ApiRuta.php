@@ -12,7 +12,7 @@ use App\Entity\Localidad;
 use App\Entity\Ruta;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
@@ -37,17 +37,30 @@ class ApiRuta extends AbstractController
         return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
-    #[Route('/pagina', name: 'getPaginaRutas', methods: ['GET'])]
-    public function getPaginaRutas(): Response
-    {
-        $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
-        $rutasJson = json_encode($rutas);
-        if ($rutasJson == null) {
-            return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
-        }
-        return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
-    }
+    // #[Route('/mejores/{pagina}', name: 'getMejoresRutas', methods: ['GET'])]
+    // public function getMejoresRutas(): Response
+    // {
+    //     $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
+    //     $rutasJson = json_encode($rutas);
+    //     if ($rutasJson == null) {
+    //         return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
+    //     }
+    //     return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
+    // }
 
+    // #[Route('/mejores/{pagina}', name: 'getPaginaRutas', methods: ['GET'])]
+    // public function getPaginaRutas(): Response
+    // {
+    //     $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
+    //     $rutasJson = json_encode($rutas);
+    //     if ($rutasJson == null) {
+    //         return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
+    //     }
+    //     return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
+    // }
+
+
+    //No hace falta con el método general que comprueba los query params de la ruta
     #[Route('/localidad/{id}', name: 'getRutasByLocalidad', methods: ['GET'])]
     public function getRutasByLocalidad(Localidad $localidad): JsonResponse
     {
@@ -72,6 +85,48 @@ class ApiRuta extends AbstractController
         }
         return new JsonResponse($rutaJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
+
+    #[Route('/pagina/{page}', name: 'getRutasPaginadas', methods: ['GET'])]
+    public function getRutasPaginadas($page, Request $request): Response
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $resultado = $queryBuilder->select('ruta')
+                    ->from('App:Ruta', 'ruta')
+                    ->join('ruta.itemRuta', 'itemRuta')
+                    ->join('itemRuta.item', 'item')
+                    ->setFirstResult(($page-1)*9)
+                    ->setMaxResults(18);
+        
+        // $parametros = $request->query->get('localidad');
+        // var_dump($parametros);
+
+        if ($request->query->get('localidad')) {
+            $queryBuilder
+                        ->andWhere('item.localidad = :localidad')
+                        ->setParameter('localidad', $request->query->get('localidad'));
+        }
+        
+        if ($request->query->get('valoracion')) {
+            $queryBuilder->andWhere('t.valoracion >= :valoracion')
+               ->setParameter('valoracion', $request->query->get('valoracion'));
+        }
+    
+        if ($request->query->get('fecha')) {
+            $fecha = new \DateTime($request->query->get('fecha'));
+            $queryBuilder->andWhere('t.fecha >= :fecha')
+               ->setParameter('fecha', $fecha);
+        }
+
+        // $rutas = $this->entityManager->getRepository(Ruta::class)->findAll();
+        // $rutasJson = json_encode($rutas);
+        $rutasJson = json_encode($resultado);
+        if ($rutasJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
+        }
+        return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
+
 
     #[Route('/guardaRuta', name: 'guardaRuta', methods: ['POST'])]
     public function creaRuta(HttpFoundationRequest $request): Response

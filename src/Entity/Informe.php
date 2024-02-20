@@ -27,7 +27,7 @@ class Informe
 
     #[ORM\OneToOne(inversedBy: 'informe', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?tour $tour = null;
+    private ?Tour $tour = null;
 
     public function getId(): ?int
     {

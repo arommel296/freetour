@@ -1,6 +1,9 @@
 $(function () {
     var itemNuevo = $("#itemNuevo");
 
+    var guardaItem = $("input[type=submit]");
+    console.log(guardaItem);
+
     $(".content").append(itemNuevo);
 
     $('#descripcion').jqxEditor({
@@ -43,6 +46,8 @@ $(function () {
         select: function (event, ui) {  
             console.log("Loclaidad seleccionada: " + ui.item.value + " con id: " + ui.item.id);
             localidad.val(ui.item.value)
+            localidad.attr("value", ui.item.id);
+            console.log(localidad.attr("value"));
         }
     });
 
@@ -59,10 +64,16 @@ $(function () {
         },
         width: 700,
         height: 650,
+        buttons: {
+            Volver: function() {
+            $("#mapaDialog").dialog( "close" );
+            }
+        },
     });
 
     var coord = $("#coordenadas");
-    coord.on("click", function () {
+    var coordUsable = $("#coordUsable")
+    coordUsable.on("click", function () {
         creaMapa();
     })
 
@@ -89,6 +100,8 @@ $(function () {
 
             // Pone las coordenadas del marker en el input
             coord.val(e.latlng.lat + ', ' + e.latlng.lng);
+            coordUsable.text("Punto establecido en el mapa ✔️");
+            console.log(coordUsable.text());
             console.log(coord.val());
         });
 
@@ -122,6 +135,8 @@ $(function () {
                         marker.setLatLng([lat, lon]);
                         console.log("punto puesto buscando por nombre");
                         coord.val(lat + ', ' + lon);
+                        coordUsable.text("Punto establecido en el mapa ✔️");
+                        console.log(coordUsable.text());
                         console.log(coord.val());
                     } else {
                         alert("No se encontró el lugar en "+localidad.val());
@@ -147,5 +162,44 @@ $(function () {
         buscar.on("click", buscarPorCiudad)
         
     }
+
+
+
+    guardaItem.on("click", function (ev) {
+        ev.preventDefault();
+
+        const fotoInput = $('.image-uploader input[type="file"]');
+        const foto = fotoInput[0].files[0];
+        var titulo = $('#titulo').val();
+        var coordenadas = $('#coordenadas').val();
+        var descripcion = $('#descripcion').jqxEditor('val');
+        var local =localidad.attr("value");
+        console.log(local);
+
+        var formData = new FormData();
+        formData.append('foto', foto, foto.name);
+        formData.append('nombre', titulo);
+        formData.append('descripcion', descripcion);
+        formData.append('coordenadas', coordenadas);
+        formData.append('localidad', local);
+
+
+        $.ajax({
+            url: '/api/item/guardaItem',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log("éxito");
+                console.log(response);
+            },
+            error: function (error) {
+                console.log("no se ha guardado");
+                console.log(error);
+            }
+        })
+        
+    })
 
 })

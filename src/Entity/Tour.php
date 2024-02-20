@@ -22,14 +22,14 @@ class Tour implements JsonSerializable
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaHora = null;
 
-    #[ORM\OneToMany(mappedBy: 'tour', targetEntity: reserva::class)]
+    #[ORM\OneToMany(mappedBy: 'tour', targetEntity: Reserva::class)]
     private Collection $reservas;
 
     #[ORM\OneToOne(mappedBy: 'tour', cascade: ['persist', 'remove'])]
     private ?Informe $informe = null;
 
     #[ORM\ManyToOne(inversedBy: 'tours')]
-    private ?usuario $usuario = null;
+    private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'tours')]
     #[ORM\JoinColumn(nullable: false)]
@@ -54,8 +54,24 @@ class Tour implements JsonSerializable
         return $this->fechaHora;
     }
 
-    public function setFechaHora(\DateTimeInterface $fechaHora): static
+    // public function setFechaHora(\DateTimeInterface $fechaHora): static
+    // {
+    //     $this->fechaHora = $fechaHora;
+
+    //     return $this;
+    // }
+
+    public function setFechaHora(\DateTime $fechaHora): static
     {
+        $hora = (int) $fechaHora->format('H');
+        $minutos = (int) $fechaHora->format('i');
+
+        if ($minutos >= 30) {
+            $hora++;
+        }
+
+        $fechaHora->setTime($hora, 0);
+
         $this->fechaHora = $fechaHora;
 
         return $this;
@@ -108,12 +124,12 @@ class Tour implements JsonSerializable
         return $this;
     }
 
-    public function getUsuario(): ?usuario
+    public function getUsuario(): ?Usuario
     {
         return $this->usuario;
     }
 
-    public function setUsuario(?usuario $usuario): static
+    public function setUsuario(?Usuario $usuario): static
     {
         $this->usuario = $usuario;
 
@@ -146,7 +162,7 @@ class Tour implements JsonSerializable
 
     public function __toString(): string
     {
-        return $this->getRuta()->getNombre().'-'.$this->getFechaHora();
+        return $this->getRuta()->getNombre().'-'.$this->getFechaHora()->format('Y-m-d H:i:s');
     }
 
     public function jsonSerialize(): array

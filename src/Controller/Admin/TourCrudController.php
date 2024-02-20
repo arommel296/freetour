@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Form\FormInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class TourCrudController extends AbstractCrudController
 {
@@ -52,24 +53,6 @@ class TourCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // $rutas = [];
-        $repo = $this->entityManager->getRepository(Usuario::class);
-        $a=$repo->findUsersByRole('ROLE_GUIA');
-        // var_dump($a);
-        $rutas = $this->entityManager->getRepository(Ruta::class)->findAll();
-        $rutasNombre = [];
-        foreach ($rutas as $ruta) {
-            $rutasNombre[$ruta->getNombre()] = $ruta->getId();
-        }
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
-        
-        $guias = [];
-        foreach($usuarios as $usuario){
-            if (in_array('["ROLE_USER","ROLE_GUIA"]', $usuario->getRoles())) {
-                $guias[$usuario->getNombre()] = $usuario->getId();
-                // $guias[]=$usuario;
-            }
-        }
 
         return [
             AssociationField::new('ruta')
@@ -80,15 +63,9 @@ class TourCrudController extends AbstractCrudController
             BooleanField::new('disponible'),
             AssociationField::new('usuario')
                                             ->setLabel('Guía')
-                                            // ->setQueryBuilder(function () use ($repo) {
-                                            //     var_dump($repo->findUsersByRole('["ROLE_USER","ROLE_GUIA"]'));
-                                            //     return $repo->findUsersByRole('["ROLE_USER","ROLE_GUIA"]');
-
-                                            // })
-                                            ->setQueryBuilder(function () use ($repo) {
-                                                return $repo->createQueryBuilder('usuario')
-                                                    ->where('usuario.roles like :guia')
-                                                    ->setParameter('guia', '["ROLE_USER","ROLE_GUIA"]');
+                                            ->setQueryBuilder(function (QueryBuilder $queryBuilder) {
+                                                $queryBuilder->andWhere("entity.roles like :role")
+                                                ->setParameter('role', "%ROLE_GUIA%");
                                             })
                                             ->setRequired(true)
                                             ->setHelp('Selecciona el guía asociado al tour'),

@@ -12,13 +12,17 @@ use App\Entity\Localidad;
 use App\Entity\Ruta;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Service\FileUploaderService;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 #[Route('/api/item')]
 class ApiItem extends AbstractController
 {
     private $entityManager;
-    public function __construct(EntityManagerInterface $entityManager) {
+    private $fileUploaderService;
+    public function __construct(EntityManagerInterface $entityManager, FileUploaderService $fileUploaderService) {
         $this->entityManager = $entityManager;
+        $this->fileUploaderService = $fileUploaderService;
     }
     // #[Route('/localidad/{id}', name: 'getLocalidad', methods: ['GET'])]
     // public function getLocalidad(Usuario $usuario): RedirectResponse
@@ -113,6 +117,36 @@ class ApiItem extends AbstractController
             return new Response(null, 404, $headers = ["no se han encontrado items"]);
         }
         return new JsonResponse($itemJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
+    #[Route('/guardaItem', name: 'guardaItem', methods: ['POST'])]
+    public function guardaItem(HttpFoundationRequest $request): Response
+    {
+        try {
+            $foto = $request->files->get('foto');
+            $fileName = $this->fileUploaderService->upload($foto);
+            $nombre = $request->request->get('nombre');
+            $coordenadas = $request->request->get('coordenadas');
+            $descripcion = $request->request->get('descripcion');
+            $local= $request->request->get('localidad');
+            // var_dump($local);
+
+            $item = new Item();
+            // $localidad = new Localidad();
+            $localidad = $this->entityManager->getRepository(Localidad::class)->find($local);
+            $item->setCoordenadas($coordenadas);
+            $item->setNombre($nombre);
+            $item->setDescripcion($descripcion);
+            $item->setFoto($fileName);
+            $item->setLocalidad($localidad);
+
+            $this->entityManager->persist($item);
+            $this->entityManager->flush();
+            return new JsonResponse($item->jsonSerialize(), 200, $headers = ["Content-Type" => "application/json"]);
+            
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function index(): Response
