@@ -31,7 +31,7 @@ class Ruta implements JsonSerializable
     #[ORM\ManyToMany(targetEntity: Item::class)]
     private Collection $items;
 
-    #[ORM\OneToMany(mappedBy: 'Ruta', targetEntity: Tour::class)]
+    #[ORM\OneToMany(mappedBy: 'ruta', targetEntity: Tour::class)]
     private Collection $tours;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -37,6 +37,17 @@ class ApiRuta extends AbstractController
         return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    #[Route('/unica/{id}', name: 'getRuta', methods: ['GET'])]
+    public function getRuta($id): Response
+    {
+        $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+        if ($ruta == null) {
+            return new Response(null, 404, $headers = ["No se ha encontrado la Ruta"]);
+        }
+        $rutaJson = json_encode($ruta);
+        return new Response($rutaJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
     // #[Route('/mejores/{pagina}', name: 'getMejoresRutas', methods: ['GET'])]
     // public function getMejoresRutas(): Response
     // {
@@ -61,16 +72,33 @@ class ApiRuta extends AbstractController
 
 
     //No hace falta con el método general que comprueba los query params de la ruta
-    #[Route('/localidad/{id}', name: 'getRutasByLocalidad', methods: ['GET'])]
-    public function getRutasByLocalidad(Localidad $localidad): JsonResponse
+    #[Route('/localidad/{nombre}', name: 'getRutasByLocalidad', methods: ['GET'])]
+    public function getRutasByLocalidad($nombre): JsonResponse
     {
+        $localidad = $this->entityManager->getRepository(Localidad::class)->findOneBy(['nombre' => $nombre]);
+
+        if ($localidad === null) {
+            // Handle the case where no Localidad with the given name was found
+            return new JsonResponse(null, 404, $headers = ["No se ha encontrado la localidad"]);
+        }
         $items = $this->entityManager->getRepository(Item::class)->findBy(['localidad' => $localidad]);
+        // var_dump($items);
 
         $rutas = [];
         foreach ($items as $item) {
             // obtiene las Rutas de cada item
-            $rutasItem = $this->entityManager->getRepository(Ruta::class)->findBy(['item' => $item]);
-            // Añade las Rutas al array de rutas en bruto
+            // var_dump($item->getLocalidad()->getNombre());
+
+            // if ($item->getLocalidad()->getNombre()==$nombre) {
+            //     rutas[]=
+            // }
+
+            // if ($item->get) {
+            //     rutas[]=
+            // }
+            $rutasItem=[];
+            $rutasItem[] = $this->entityManager->getRepository(Ruta::class)->findBy(['items' => $item]);
+            //Añade las Rutas al array de rutas en bruto
             $rutas = array_merge($rutas, $rutasItem);
         }
         // Elimina las Rutas duplicadas
@@ -81,7 +109,7 @@ class ApiRuta extends AbstractController
         }
 
         if ($rutaJson == []) {
-            return new Response(null, 404, $headers = ["no se han encontrado rutas"]);
+            return new JsonResponse(null, 404, $headers = ["no se han encontrado rutas"]);
         }
         return new JsonResponse($rutaJson, 200, $headers = ["Content-Type" => "application/json"]);
     }

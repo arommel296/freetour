@@ -29,12 +29,12 @@ class Reserva implements JsonSerializable
     #[ORM\OneToOne(mappedBy: 'reserva', cascade: ['persist', 'remove'])]
     private ?Valoracion $valoracion = null;
 
-    #[ORM\OneToMany(mappedBy: 'reserva', targetEntity: usuario::class)]
+    #[ORM\OneToMany(mappedBy: 'reserva', targetEntity: Usuario::class)]
     private Collection $usuarios;
 
     #[ORM\ManyToOne(inversedBy: 'reservas')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?usuario $usuario = null;
+    private ?Usuario $usuario = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $nAsistentes = null;
@@ -94,14 +94,14 @@ class Reserva implements JsonSerializable
     }
 
     /**
-     * @return Collection<int, usuario>
+     * @return Collection<int, Usuario>
      */
     public function getUsuarios(): Collection
     {
         return $this->usuarios;
     }
 
-    public function addUsuario(usuario $usuario): static
+    public function addUsuario(Usuario $usuario): static
     {
         if (!$this->usuarios->contains($usuario)) {
             $this->usuarios->add($usuario);
@@ -111,7 +111,7 @@ class Reserva implements JsonSerializable
         return $this;
     }
 
-    public function removeUsuario(usuario $usuario): static
+    public function removeUsuario(Usuario $usuario): static
     {
         if ($this->usuarios->removeElement($usuario)) {
             // set the owning side to null (unless already changed)
@@ -123,12 +123,12 @@ class Reserva implements JsonSerializable
         return $this;
     }
 
-    public function getUsuario(): ?usuario
+    public function getUsuario(): ?Usuario
     {
         return $this->usuario;
     }
 
-    public function setUsuario(?usuario $usuario): static
+    public function setUsuario(?Usuario $usuario): static
     {
         $this->usuario = $usuario;
 

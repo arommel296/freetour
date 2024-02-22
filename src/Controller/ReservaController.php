@@ -16,7 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\HttpFoundation\Request;
 
-class RutaController extends AbstractController
+class ReservaController extends AbstractController
 {
     public static function getEntityFqcn(): string
     {
@@ -29,20 +29,29 @@ class RutaController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/verRuta/{id}', name: 'verRuta')]
-    public function verRuta($id, Request $request): Response
+    #[Route('/reservar/ruta/{id}', name: 'reservar')]
+    public function reservar($id, Request $request): Response
     {
 
         $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
-        $tours = $ruta->getTours();
+        // $tours = $ruta->getTours();
         // var_dump($tours);
         $reserva = new Reserva();
         // $reserva->setFechaReserva(new \DateTime);
-        $form = $this->createForm(ReservaType::class);
+        $form = $this->createForm(ReservaType::class, $reserva, [
+            'ruta_id' => $id,
+        ]);
         $form->handleRequest($request);
-        return $this->render('ruta/verRuta.html.twig', [
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($reserva);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('reserva/reservar.html.twig', [
             'ruta' => $ruta,
-            'tours' => $tours,
+            // 'tours' => $tours,
             'form' => $form->createView(),
         ]);
     }

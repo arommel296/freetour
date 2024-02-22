@@ -162,7 +162,7 @@ class Tour implements JsonSerializable
 
     public function __toString(): string
     {
-        return $this->getRuta()->getNombre().'-'.$this->getFechaHora()->format('Y-m-d H:i:s');
+        return $this->getRuta()->getNombre().' - '.$this->getFechaHora()->format('d/m/Y H:i:s');
     }
 
     public function jsonSerialize(): array

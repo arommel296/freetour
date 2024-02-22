@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 
 class RutaCrudController extends AbstractCrudController
@@ -66,6 +67,17 @@ class RutaCrudController extends AbstractCrudController
             return $action->linkToCrudAction('editRedirect');
         });
     }
+
+    #[Route('/editRedirect', name: 'editRedirect')]
+    public function editRedirect(AdminContext $context): Response
+    {
+        $entityInstance = $context->getEntity()->getInstance();
+        $id = $entityInstance->getId();
+        return $this->render('ruta/nuevaRuta.html.twig',[
+            "id" => $id
+        ]);
+    }
+
 
     #[Route('/creaRuta', name: 'creaRuta')]
     public function nuevaRuta(): Response
