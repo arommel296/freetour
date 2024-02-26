@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Reserva;
 use App\Entity\Ruta;
 use App\Entity\Item;
+use App\Entity\Tour;
 use App\Form\ReservaType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +36,7 @@ class ReservaController extends AbstractController
     {
 
         $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+        $itemsRuta = $ruta->getItems();
         // $tours = $ruta->getTours();
         // var_dump($tours);
         $reserva = new Reserva();
@@ -44,6 +47,14 @@ class ReservaController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $tourId = $request->get('tourId');
+            $tour = $this->entityManager->getRepository(Tour::class)->find($tourId);
+            $reserva->setTour($tour);
+            $reserva->setUsuario($this->getUser());
+            $nEntradas = $form->get('nEntradas')->getData();
+            $reserva->setNEntradas($nEntradas);
+            $reserva->setFechaReserva(new DateTime());
+
             $this->entityManager->persist($reserva);
             $this->entityManager->flush();
 
@@ -51,7 +62,7 @@ class ReservaController extends AbstractController
         }
         return $this->render('reserva/reservar.html.twig', [
             'ruta' => $ruta,
-            // 'tours' => $tours,
+            'items' => $itemsRuta,
             'form' => $form->createView(),
         ]);
     }

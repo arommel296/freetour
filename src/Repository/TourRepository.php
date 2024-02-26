@@ -45,4 +45,43 @@ class TourRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findToursBiggerDate($date, $idRuta){
+        return $this->createQueryBuilder('tour')
+                    ->andWhere('tour.ruta = :ruta')
+                    ->setParameter('ruta', $idRuta)
+                    ->andWhere('tour.fechaHora > :date')
+                    ->setParameter('date', $date)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function findToursDate($date, $idRuta){
+        return $this->createQueryBuilder('tour')
+                    ->andWhere('tour.ruta = :ruta')
+                    ->setParameter('ruta', $idRuta)
+                    ->andWhere('SUBSTRING(tour.fechaHora, 1, 10) = :date')
+                    ->setParameter('date', $date->format('Y-m-d'))
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function findAvailableSeats($tourId){
+        $qb = $this->createQueryBuilder('tour');
+    
+        $reservasTotales = $qb->select('SUM(reserva.nEntradas)')
+                                 ->leftJoin('tour.reservas', 'reserva')
+                                 ->where('tour.id = :tourId')
+                                 ->setParameter('tourId', $tourId)
+                                 ->getQuery()
+                                 ->getResult();
+    
+        $tour = $this->find($tourId);
+        $aforo = $tour->getRuta()->getAforo();
+    
+        $plazasDisponibles = $aforo - ($reservasTotales[0][1] ?? 0);
+    
+        return $plazasDisponibles;
+    }
+
 }

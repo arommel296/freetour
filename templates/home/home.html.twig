@@ -66,7 +66,16 @@
           </li>
           {% endif %}
           {% if is_granted('ROLE_GUIA') %}
-          <li><a href="{{path('guia')}}" class="">Panel de Guía</a></li>
+                  <ul>
+                    <li class="dropdown has-dropdown"><a class="">Menú Guía</a>
+                      <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                        <li><a href="{{path('calendarioGuia')}}"><img src="{{ asset('static/img/usuario.png') }}" alt="Inicio"
+                              class="icono" width="28px" height="28px">Mi Calendario</a></li>
+                        <li><a href="{{path('informes')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}" alt="Inicio"
+                              class="icono" width="28px" height="28px">Informes</a></li>
+                      </ul>
+                    </li>
+                  </ul>
           {% endif %}
           <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio"
                 class="icono" width="28px" height="28px">Todas las ciudades</a></li>

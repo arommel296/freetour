@@ -51,17 +51,58 @@ class ApiTour extends AbstractController
         return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    #[Route('/all/fechas/ruta/{id}', name: 'getFechasTours', methods: ['GET'])]
+    public function getFechasTours($id): Response
+    {
+        $hoy = new \DateTime;
+        $tours = $this->entityManager->getRepository(Tour::class)->findToursBiggerDate($hoy, $id);
+        // $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+        // $tours = $ruta->getTours();
+        // $tours = $this->entityManager->getRepository(Tour::class)->findAll();
+
+        $toursJson = [];
+        foreach ($tours as $tour) {
+            $toursJson[] = json_encode($tour->getFechaHora());
+        }
+
+        // $toursJson = json_encode($tours);
+        if ($toursJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+        }
+        return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
+    #[Route('/all/day/ruta/{id}/{fecha}', name: 'getToursOfDay', methods: ['GET'])]
+    public function getToursOfDay($id, $fecha): Response
+    {
+        $fecha = \DateTime::createFromFormat('d-m-Y', $fecha);
+        $tours = $this->entityManager->getRepository(Tour::class)->findToursDate($fecha, $id);
+
+        $toursJson = [];
+        foreach ($tours as $tour) {
+            $tourJson['tour'] = $tour->jsonSerialize();
+            $tourJson['aforo'] = $this->entityManager->getRepository(Tour::class)->findAvailableSeats($tour->getId());
+            $toursJson[] = $tourJson;
+        }
+
+        if ($toursJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+        }
+        return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
+
     #[Route('/guia/{id}', name: 'getToursByGuia', methods: ['GET'])]
     public function getItemsByGuia(Usuario $guia): Response
     {
-        $tours = $this->entityManager->getRepository(Tour::class)->findBy(['guia' => $guia]);
+        $tours = $this->entityManager->getRepository(Tour::class)->findBy(['usuario' => $guia]);
         $toursJson=[];
         foreach ($tours as $tour) {
             $toursJson[] = $tour->jsonSerialize();
         }
 
         if ($toursJson == []) {
-            return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+            return new JsonResponse(null, 404, $headers = ["no se han encontrado tours"]);
         }
         return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
@@ -76,5 +117,34 @@ class ApiTour extends AbstractController
         }
         return new Response($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
+
+    #[Route('/today/guia', name: 'getToursGuia', methods: ['GET'])]
+public function getToursGuia(): Response
+{
+    $guia = $this->getUser();
+    $fecha = new \DateTime;
+    $fecha->setTime(0, 0);
+
+    $fechaFin = clone $fecha;
+    $fechaFin->setTime(23, 59, 59);
+
+    $tours = $this->entityManager->getRepository(Tour::class)->createQueryBuilder('t')
+        ->where('t.usuario = :guia')
+        ->andWhere('t.fechaHora BETWEEN :fechaInicio AND :fechaFin')
+        ->setParameters([
+            'guia' => $guia,
+            'fechaInicio' => $fecha,
+            'fechaFin' => $fechaFin,
+        ])
+        ->getQuery()
+        ->getResult();
+
+    $toursJson = json_encode($tours);
+    if ($toursJson == null) {
+        return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+    }
+    return new Response($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
+}
+
     
 }

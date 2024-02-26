@@ -28,10 +28,10 @@ class EnviaCorreoCommand extends Command
     {
         $this
             ->setName('app:envia-correo')
-            ->setDescription('Envía un correo con el contenido que se desee y al destinatario que le indiques.')
-            ->addArgument('correo', InputArgument::REQUIRED, 'Introduce el correo del destinatario')
-            ->addArgument('subject', InputArgument::REQUIRED, 'Introducir el Título del correo')
-            ->addArgument('text', InputArgument::REQUIRED, 'Introduce el texto del cuerpo del correo');
+            ->setDescription('Envía un correo con el contenido que se desee y al destinatario que le indiques.');
+            // ->addArgument('correo', InputArgument::REQUIRED, 'Introduce el correo del destinatario')
+            // ->addArgument('subject', InputArgument::REQUIRED, 'Introducir el Título del correo')
+            // ->addArgument('text', InputArgument::REQUIRED, 'Introduce el texto del cuerpo del correo');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

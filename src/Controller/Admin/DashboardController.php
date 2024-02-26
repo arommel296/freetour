@@ -19,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use Symfony\Component\Security\Core\User\UserInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 
 class DashboardController extends AbstractDashboardController
@@ -83,6 +84,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Valoraciones', 'fas fa-magnifying-glass-location', Valoracion::class);
     }
 
+    public function configureAssets(): Assets
+    {
+        return Assets::new()->addCssFile('static/css/dashboard.css');
+    }
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         return parent::configureUserMenu($user);

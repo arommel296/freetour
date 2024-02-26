@@ -34,18 +34,18 @@ class ReservaType extends AbstractType
             ->add('nEntradas')
             // ->add('nAsistentes')
             // ->add('fechaReserva')
-            ->add('tour', EntityType::class, [
-                'class' => Tour::class,
-                // 'choice_label' => function() use ($rutaId){
-                //     $ruta = $this->entityManager->getRepository(Ruta::class)->find($rutaId);
-                //     $tours = $ruta->getTours();
-                //     // return $tour->getFechaHora()->format('Y-m-d H:i');
-                //     foreach ($tours as $tour) {
-                //         return $tour;
-                //     } 
-                // },
-                'choices' => $tours,
-            ])
+            // ->add('tour', EntityType::class, [
+            //     'class' => Tour::class,
+            //     // 'choice_label' => function() use ($rutaId){
+            //     //     $ruta = $this->entityManager->getRepository(Ruta::class)->find($rutaId);
+            //     //     $tours = $ruta->getTours();
+            //     //     // return $tour->getFechaHora()->format('Y-m-d H:i');
+            //     //     foreach ($tours as $tour) {
+            //     //         return $tour;
+            //     //     } 
+            //     // },
+            //     'choices' => $tours,
+            // ])
 //             ->add('valoracion', EntityType::class, [
 //                 'class' => Valoracion::class,
 // 'choice_label' => 'id',

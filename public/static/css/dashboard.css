@@ -1,0 +1,35 @@
+i {
+    color: #ea5757 !important;
+}
+
+.fa-stack .fa-user{
+    color: #ea5757 !important;
+}
+
+.fa-stack .fa-square{
+    color: #e6e6e6 !important;
+}
+
+.action-new{
+    background-color: #ea5757 !important;
+}
+
+#main-menu .menu .menu-item.active:not(.expanded) .menu-icon, #main-menu .menu .menu-item.active:not(.expanded) a {
+    color: #ea5757 !important;
+}
+
+.dropdown-settings .dropdown-item.active{
+    color: #ea5757 !important;
+}
+
+.form-check-input:checked{
+    background-color: #ea5757 !important;
+}
+
+.action-edit{
+    background-color: #ea5757 !important;
+}
+
+.dropdown-item.action-edit{
+    background-color: white !important;
+}
