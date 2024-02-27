@@ -17,10 +17,10 @@ class ValoracionType extends AbstractType
             ->add('notaGuia')
             ->add('notaRuta')
             ->add('comentario')
-            ->add('reserva', EntityType::class, [
-                'class' => reserva::class,
-'choice_label' => 'id',
-            ])
+//             ->add('reserva', EntityType::class, [
+//                 'class' => reserva::class,
+// 'choice_label' => 'id',
+//             ])
         ;
     }
 

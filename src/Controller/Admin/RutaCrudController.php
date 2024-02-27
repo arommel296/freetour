@@ -73,8 +73,24 @@ class RutaCrudController extends AbstractCrudController
     {
         $entityInstance = $context->getEntity()->getInstance();
         $id = $entityInstance->getId();
+        $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+
+        // $nombre = $ruta->getNombre();
+        // $descripcion = $ruta->getDescripcion();
+        // $coordInicio = $ruta->getCoordInicio();
+        // $inicio = $ruta->getInicio();
+        // $fin = $ruta->getFin();
+        // $foto = $ruta->getFoto();
+        // $aforo = $ruta->getAforo();
         return $this->render('ruta/nuevaRuta.html.twig',[
-            "id" => $id
+            "ruta" => $ruta,
+            // 'titulo' => $nombre,
+            // 'coordInicio' => $coordInicio,
+            // 'foto' => $foto,
+            // 'descripcion' => $descripcion,
+            // 'inicio' => $inicio,
+            // 'fin' => $fin,
+            // 'aforo' => $aforo,
         ]);
     }
 

@@ -61,20 +61,20 @@
 				<div id="tabs-1" class="mt-1 p-2 border rounded">
 					<div class="mb-3">
 						<label for="titulo" class="form-label">Título</label>
-						<input type="text" class="form-control" id="titulo" />
+						<input type="text" class="form-control" id="titulo" name="titulo"/>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
 							{# <div class="mb-3"> #}
 							<label for="descripcion" class="form-label">Descripción</label>
 							{# <textarea name="descripcion" id="descripcion"></textarea> #}
-							<div id="descripcion"></div>
+							<div id="descripcion" name="descripcion"></div>
 							{# </div> #}
 						</div>
 						<div class="col">
 							{# <div class="mb-3"> #}
 							<label for="foto" class="form-label">Imagen</label>
-							<div class="input-images" id="subeFotos"></div>
+							<div class="input-images" id="subeFotos" name="foto"></div>
 							{# <input type="file" id="sueltaFoto" name="foto"></input> #}
 							{# </div> #}
 						</div>
@@ -91,7 +91,7 @@
 						<div class="col">
 							<label for="coord_inicio" class="form-label">Punto de inicio</label>
 							<input type="hidden" class="form-control" id="coord_inicio"
-								placeholder="Click para desplegar el mapa">
+								placeholder="Click para desplegar el mapa" name="coordInicio">
 							<span class="form-control" id="coordUsable">Click para desplegar el mapa</span>
 							<div id="mapaDialog">
 								<div id="mapid" style="height: 400px;"></div>

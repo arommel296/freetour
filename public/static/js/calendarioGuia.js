@@ -59,7 +59,7 @@ $(function () {
   function cargaTours() {
     var eventos = [];
     $.ajax({
-      url: "/api/tour/all",
+      url: "/api/tour/all/guia",
       method: "GET",
       dataType: "json",
       success: function (data) {

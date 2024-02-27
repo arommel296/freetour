@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Serializer;
 
-$serializer = new Serializer();
+// $serializer = new Serializer();
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Ya existe una cuenta con este email')]

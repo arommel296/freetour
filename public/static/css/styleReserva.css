@@ -88,7 +88,7 @@ header .current-date{
   position: absolute;
   content: "";
   left: 50%;
-  top: 34%;
+  top: 45%;
   height: 40px;
   width: 40px;
   z-index: -1;
@@ -116,4 +116,8 @@ header .current-date{
 
 .active > .evento{
   background-color: white;
+}
+
+.wrapper .calendar .days li, .wrapper .calendar .weeks li{
+  padding-bottom: 0 !important;
 }

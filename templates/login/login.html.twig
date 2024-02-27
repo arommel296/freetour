@@ -66,8 +66,8 @@
                 alt="Inicio" class="icono" width="28px" height="28px">Panel de Administrador</a>
           </li>
           {% endif %}
-          {% if is_granted('ROLE_GUIA') %}
-          <li><a href="{{path('guia')}}" class="">Panel de Guía</a></li>
+          {% if is_granted('ROLE_USER') %}
+          <li><a href="{{path('listadoReservas')}}" class="">Mis Reservas</a></li>
           {% endif %}
           <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio"
                 class="icono" width="28px" height="28px">Todas las ciudades</a></li>
@@ -91,24 +91,6 @@
         {# <a class="active">Hola, {{app.user}}</a> #}
 
       </div>
-      {# {% else %}
-      <div>
-        <a class="btn-getstarted" href="{{path('app_login')}}"><img
-            src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
-            height="28px"><span>Iniciar Sesión</span></a>
-        <a class="btn-getstarted" href="{{path('app_register')}}"><img
-            src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
-            height="28px"><span>Registrarse</span></a>
-      </div> #}
-
-      {# <ul>
-            <li>
-              <a class="btn-getstarted active" href="{{path('app_login')}}"><img src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Iniciar Sesión</a>
-            </li>
-            <li>
-              <a class="btn-getstarted active" href="{{path('app_register')}}"><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Registrarse</a>
-            </li>
-          </ul> #}
       {% endif %}
 
     </div>

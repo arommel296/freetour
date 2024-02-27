@@ -27,6 +27,7 @@ class Reserva implements JsonSerializable
     private ?Tour $tour = null;
 
     #[ORM\OneToOne(mappedBy: 'reserva', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Valoracion $valoracion = null;
 
     #[ORM\OneToMany(mappedBy: 'reserva', targetEntity: Usuario::class)]

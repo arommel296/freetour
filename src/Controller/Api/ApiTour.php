@@ -118,33 +118,66 @@ class ApiTour extends AbstractController
         return new Response($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
-    #[Route('/today/guia', name: 'getToursGuia', methods: ['GET'])]
-public function getToursGuia(): Response
-{
-    $guia = $this->getUser();
-    $fecha = new \DateTime;
-    $fecha->setTime(0, 0);
+    #[Route('/all/guia', name: 'getAllToursGuia', methods: ['GET'])]
+    public function getAllToursGuia(): Response
+    {
+        $guia = $this->getUser();
+        $fecha = new \DateTime;
+        $fecha->setTime(0, 0);
 
-    $fechaFin = clone $fecha;
-    $fechaFin->setTime(23, 59, 59);
+        $fechaFin = clone $fecha;
+        $fechaFin->setTime(23, 59, 59);
 
-    $tours = $this->entityManager->getRepository(Tour::class)->createQueryBuilder('t')
-        ->where('t.usuario = :guia')
-        ->andWhere('t.fechaHora BETWEEN :fechaInicio AND :fechaFin')
-        ->setParameters([
-            'guia' => $guia,
-            'fechaInicio' => $fecha,
-            'fechaFin' => $fechaFin,
-        ])
-        ->getQuery()
-        ->getResult();
+        $tours = $this->entityManager->getRepository(Tour::class)->createQueryBuilder('tour')
+            ->where('tour.usuario = :guia')
+            ->setParameters([
+                'guia' => $guia,
+            ])
+            ->getQuery()
+            ->getResult();
 
-    $toursJson = json_encode($tours);
-    if ($toursJson == null) {
-        return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+        $toursJson=[];
+        foreach ($tours as $tour) {
+            $toursJson[]=$tour->jsonSerialize();
+        }
+
+        if ($toursJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+        }
+        return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
-    return new Response($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
-}
+
+    #[Route('/today/guia', name: 'getToursGuia', methods: ['GET'])]
+    public function getToursGuia(): Response
+    {
+        $guia = $this->getUser();
+        $fecha = new \DateTime;
+        $fecha->setTime(0, 0);
+
+        $fechaFin = clone $fecha;
+        $fechaFin->setTime(23, 59, 59);
+
+        $tours = $this->entityManager->getRepository(Tour::class)->createQueryBuilder('tour')
+            ->where('tour.usuario = :guia')
+            ->andWhere('tour.fechaHora BETWEEN :fechaInicio AND :fechaFin')
+            ->setParameters([
+                'guia' => $guia,
+                'fechaInicio' => $fecha,
+                'fechaFin' => $fechaFin,
+            ])
+            ->getQuery()
+            ->getResult();
+
+        $toursJson=[];
+        foreach ($tours as $tour) {
+            $toursJson[]=$tour->jsonSerialize();
+        }
+
+        if ($toursJson == null) {
+            return new Response(null, 404, $headers = ["no se han encontrado tours"]);
+        }
+        return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
 
     
 }

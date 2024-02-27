@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Reserva;
 use App\Entity\Ruta;
+use App\Entity\Tour;
 use App\Entity\Valoracion;
 use App\Form\ValoracionType;
 use DateTime;
@@ -51,7 +52,7 @@ class ValoracionController extends AbstractController
             $this->entityManager->persist($valoracion);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('principal');
         }
         return $this->render('valoracion/valoracion.html.twig', [
             'reserva' => $reserva,

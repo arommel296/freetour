@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 {# <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script> #}
 <script src="{{ asset('estilos/assets/js/main.js')}}" defer></script>
-<script src="{{ asset('static/js/calendarioReserva.js')}}" defer></script>
+{# <script src="{{ asset('static/js/calendarioReserva.js')}}" defer></script> #}
 
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -63,7 +63,7 @@
                 </ul>
                 {% endif %}
                 {% if is_granted('ROLE_USER') %}
-                {# <li><a href="{{path('misTours')}}" class="">Mis Tours</a></li> #}
+                <li><a href="{{path('listadoReservas')}}" class="">Mis Reservas</a></li>
                 {% endif %}
                 <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}"
                             alt="Inicio" class="icono" width="28px" height="28px">Todas las ciudades</a></li>
@@ -96,14 +96,6 @@
                     height="28px"><span>Registrarse</span></a>
         </div>
 
-        {# <ul>
-            <li>
-              <a class="btn-getstarted active" href="{{path('app_login')}}"><img src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Iniciar Sesión</a>
-            </li>
-            <li>
-              <a class="btn-getstarted active" href="{{path('app_register')}}"><img src="{{ asset('static/img/buscarroja.png') }}" alt="Inicio" class="icono" width="28px" height="28px">Registrarse</a>
-            </li>
-          </ul> #}
         {% endif %}
 
     </div>
@@ -112,13 +104,53 @@
 
 <body>
 
-    <main id="main">
+    <main id="main" style="padding-top: 5em;">
         <section id="portfolio-details" class="portfolio-details">
 
+            {# <div class="container aos-init aos-animate" data-aos="fade-up">
+
+                {% for reserva in reservas %}
+                    
+                {% endfor %}
+
+
+            </div> #}
+
             <div class="container aos-init aos-animate" data-aos="fade-up">
+                {# <p>{{reservas[0].fechaHora}}</p> #}
+                {% if reservas|length > 0 %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha y hora</th>
+                            <th scope="col">Número de entradas</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {# {% for reserva in reservas %}
+                        <tr>
+                            <td>{{ reserva.fechaHora|date('Y-m-d H:i') }}</td>
+                            <td>{{ reserva.numeroEntradas }}</td>
+                            <td>
+                                <a href="{{ path('admin', {'id': reserva.id}) }}" class="btn btn-primary">Modificar</a>
+                                <a href="{{ path('admin', {'id': reserva.id}) }}" class="btn btn-secondary">Valorar</a>
+                            </td>
+                        </tr>
+                        {% endfor %} #}
 
 
 
+
+
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="testimonial-item" style="height: 320px; border-radius: 5px;">
+                    <p>No tienes reservas en este momento.</p>
+                </div>
+                {% endif %}
             </div>
 
         </section><!-- End Portfolio-details Section -->

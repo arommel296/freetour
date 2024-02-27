@@ -1,5 +1,6 @@
 $(function () {
 
+    //Botón de reservar disabled hasta que no elija un tour
     $("#formulario input").attr("disabled", true);
 
     const daysTag = document.querySelector(".days"),
@@ -96,7 +97,7 @@ $(function () {
                     let r = window.location.pathname;
                     let idRuta = r.split("/ruta/", [2])[1];
 
-                    //Hago el ajax para obtener todos los datos de los tours de
+                    //Hago el ajax para obtener todos los datos de los tours del día
                     $.ajax({
                         type: "GET",
                         url: "/api/tour/all/day/ruta/" + idRuta + "/" + fecha,
@@ -111,10 +112,24 @@ $(function () {
                                     // Se crean los radio buttons con la información de cada tour (hora y aforo disponible)
                                     var tourInfo = 'Hora: ' + tour.tour.fechaHora.date.split(" ")[1].split(":")[0] + ":" + tour.tour.fechaHora.date.split(" ")[1].split(":")[1] + ', Plazas disponibles: ' + tour.aforo;
                                     // Radiobutton de Bootstrap
+                                    console.log(tour.tour.id);
                                     var radioButton = '<input type="radio" class="btn-check" name="options" id="tour' + index + '" autocomplete="off">' +
                                         '<label class="btn btn-secondary" for="tour' + index + '">' + tourInfo + '</label><br>';
                                     // Se añade cada radio button al div que lo contiene, debajo del calendario
                                     $(".wrapper").after('<div class="tour-info mt-3 mb-3 p-3 bg-white shadow rounded">' + radioButton + '</div>');
+
+                                    $('label.btn').click(function () {
+                                        var radioId = $(this).attr('for');
+                                        console.log("label pulsado");
+                                        $('#' + radioId).prop('checked', true);
+                                        if ($('input[type=radio]:checked').length > 0) {
+                                            $("input[name=tourId]").val(tour.tour.id);
+                                            $("#formulario input").attr("disabled", false);
+                                        } else {
+                                            $("#formulario input").attr("disabled", true);
+                                        }
+                                    });
+                                    
                                 });
                             }
 
@@ -232,13 +247,15 @@ $(function () {
                     var obj = JSON.parse(fecha);
                     var date = new Date(obj.date);
                     var day = date.getDate();
+                    var month = date.getMonth();
+                    var year = date.getFullYear();
                     console.log(date);
                     console.log(obj);
 
                     $("ul.days li").each(function () {
-                        if ($(this).text() == day) {
+                        // Check if the day, month, and year match
+                        if ($(this).text() == day && currMonth == month && currYear == year) {
                             $(this).append('<div class="evento"></div>');
-
                         }
                         $(this).click(function () {
                             // $(".tour-info").remove();
@@ -249,5 +266,61 @@ $(function () {
             }
         });
     }
+
+    // $('label.btn').click(function () {
+    //     var radioId = $(this).attr('for');
+    //     console.log("label pulsado");
+    //     $('#' + radioId).prop('checked', true);
+    //     if ($('input[type=radio]:checked').length > 0) {
+    //         $("#formulario input").attr("disabled", false);
+    //     } else {
+    //         $("#formulario input").attr("disabled", true);
+    //     }
+    // });
+
+    // $('input[type=radio]').change(function() {
+    //     console.log("aquí al menos entra");
+    //     if ($('input[type=radio]:checked').length > 0) {
+    //         console.log("disabled false");
+    //         $("#formulario input").attr("disabled", false);
+    //     } else {
+    //         console.log("disabled true");
+    //         $("#formulario input").attr("disabled", true);
+    //     }
+    // });
+
+
+
+    // function cargaFechas() {
+    //     let r = window.location.pathname;
+    //     let idRuta = r.split("/ruta/", [2])[1];
+    //     console.log(idRuta);
+
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "http://127.0.0.1:8000/api/tour/all/fechas/ruta/" + idRuta,
+    //         dataType: "json",
+    //         success: function (fechas) {
+    //             fechas.forEach(function (fecha) {
+    //                 var obj = JSON.parse(fecha);
+    //                 var date = new Date(obj.date);
+    //                 var day = date.getDate();
+    //                 console.log(date);
+    //                 console.log(obj);
+
+    //                 $("ul.days li").each(function () {
+    //                     if ($(this).text() == day) {
+    //                         $(this).append('<div class="evento"></div>');
+
+    //                     }
+    //                     $(this).click(function () {
+    //                         // $(".tour-info").remove();
+    //                         // $(".wrapper").after('<div class="tour-info">Información del tour: ' + fecha + '</div>');
+    //                     });
+    //                 });
+    //             });
+    //         }
+    //     });
+    // }
 
 })
