@@ -42,6 +42,15 @@
 		<!-- enlace para el css extra del formulario -->
 		<link rel="stylesheet" href="{{ asset('static/css/nuevaRuta.css')}}" />
 
+		<!-- enlace para el css de toastr -->
+		<link rel="stylesheet" href="{{ asset('static/css/toastr.min.css')}}" />
+
+		<!-- enlace para el js de toastr -->
+		<script src="{{ asset('static/js/toastr.min.js')}}"></script>
+
+		<link rel="stylesheet" href="{{ asset('static/css/validacion.css')}}" />
+		<script src="{{ asset('static/js/validaciones1.js')}}"></script>
+		
 		<!-- enlace para el js del formulario -->
 		<script src="{{ asset('static/js/nuevaRuta.js')}}"></script>
 
@@ -61,7 +70,7 @@
 				<div id="tabs-1" class="mt-1 p-2 border rounded">
 					<div class="mb-3">
 						<label for="titulo" class="form-label">Título</label>
-						<input type="text" class="form-control" id="titulo" name="titulo"/>
+						<input type="text" class="form-control" id="titulo" name="titulo" data-valida="relleno"/>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
@@ -91,7 +100,7 @@
 						<div class="col">
 							<label for="coord_inicio" class="form-label">Punto de inicio</label>
 							<input type="hidden" class="form-control" id="coord_inicio"
-								placeholder="Click para desplegar el mapa" name="coordInicio">
+								placeholder="Click para desplegar el mapa" name="coordInicio" data-valida="relleno">
 							<span class="form-control" id="coordUsable">Click para desplegar el mapa</span>
 							<div id="mapaDialog">
 								<div id="mapid" style="height: 400px;"></div>
@@ -107,17 +116,17 @@
 						</div>
 						<div class="col">
 							<label for="aforo" class="form-label">Aforo</label>
-							<input type="number" id="aforo" name="aforo" min="1" max="20" class="form-control" />
+							<input type="number" id="aforo" name="aforo" min="1" max="20" class="form-control" data-valida="numero"/>
 						</div>
 					</div>
 					<div class="row mb-1">
 						<div class="col">
-							<label for="inicio" class="form-label">Inicio</label>
-							<input type="text" class="form-control" id="inicio" name="inicio">
+							<label for="inicio" class="form-label">Inicio Periodo</label>
+							<input type="text" class="form-control" id="inicio" name="inicio" data-valida="fecha">
 						</div>
 						<div class="col">
-							<label for="fin" class="form-label">Fin</label>
-							<input type="text" class="form-control" id="fin" name="fin">
+							<label for="fin" class="form-label">Fin Periodo</label>
+							<input type="text" class="form-control" id="fin" name="fin" data-valida="fecha">
 						</div>
 					</div>
 				</div>
@@ -319,6 +328,10 @@
 					</div>
 					<div class="botonera"></div>
 				</div>
+				<div id="modalTours" title="Crear tours">
+					<p>¿Quieres crear los tours asociados a esta ruta?</p>
+					<button id="crearTours">Crear tours</button>
+				  </div>
 			</form>
 		</div>
 	</body>

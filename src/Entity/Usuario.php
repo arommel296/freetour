@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // $serializer = new Serializer();
 
@@ -25,6 +26,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -34,6 +36,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?string $password = null;
 
     #[ORM\Column(length: 100)]

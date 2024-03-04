@@ -75,16 +75,21 @@ class ApiItem extends AbstractController
     #[Route('/localidad/{id}', name: 'getItemsByLocalidad', methods: ['GET'])]
     public function getItemsByLocalidad(Localidad $localidad): Response
     {
-        $items = $this->entityManager->getRepository(Item::class)->findBy(['localidad' => $localidad]);
-        $itemJson=[];
-        foreach ($items as $item) {
-            $itemJson[] = $item->jsonSerialize();
-        }
+        if ($this->estaLog('ROLE_ADMIN')) {
+            $items = $this->entityManager->getRepository(Item::class)->findBy(['localidad' => $localidad]);
+            $itemJson=[];
+            foreach ($items as $item) {
+                $itemJson[] = $item->jsonSerialize();
+            }
 
-        if ($itemJson == []) {
-            return new Response(null, 404, $headers = ["no se han encontrado items"]);
+            if ($itemJson == []) {
+                return new Response(null, 404, $headers = ["no se han encontrado items"]);
+            }
+            return new JsonResponse($itemJson, 200, $headers = ["Content-Type" => "application/json"]);
+        } else{
+            return new JsonResponse(["error"=>"debes estar logueado"], 401, $headers = ["debes estar logueado"]);
         }
-        return new JsonResponse($itemJson, 200, $headers = ["Content-Type" => "application/json"]);
+        
     }
 
     #[Route('/ruta/{id}', name: 'getItemsByRuta', methods: ['GET'])]
@@ -122,30 +127,34 @@ class ApiItem extends AbstractController
     #[Route('/guardaItem', name: 'guardaItem', methods: ['POST'])]
     public function guardaItem(HttpFoundationRequest $request): Response
     {
-        try {
-            $foto = $request->files->get('foto');
-            $fileName = $this->fileUploaderService->upload($foto);
-            $nombre = $request->request->get('nombre');
-            $coordenadas = $request->request->get('coordenadas');
-            $descripcion = $request->request->get('descripcion');
-            $local= $request->request->get('localidad');
-            // var_dump($local);
+        if ($this->estaLog('ROLE_ADMIN')) {
+            try {
+                $foto = $request->files->get('foto');
+                $fileName = $this->fileUploaderService->upload($foto);
+                $nombre = $request->request->get('nombre');
+                $coordenadas = $request->request->get('coordenadas');
+                $descripcion = $request->request->get('descripcion');
+                $local= $request->request->get('localidad');
+                // var_dump($local);
 
-            $item = new Item();
-            // $localidad = new Localidad();
-            $localidad = $this->entityManager->getRepository(Localidad::class)->find($local);
-            $item->setCoordenadas($coordenadas);
-            $item->setNombre($nombre);
-            $item->setDescripcion($descripcion);
-            $item->setFoto($fileName);
-            $item->setLocalidad($localidad);
+                $item = new Item();
+                // $localidad = new Localidad();
+                $localidad = $this->entityManager->getRepository(Localidad::class)->find($local);
+                $item->setCoordenadas($coordenadas);
+                $item->setNombre($nombre);
+                $item->setDescripcion($descripcion);
+                $item->setFoto($fileName);
+                $item->setLocalidad($localidad);
 
-            $this->entityManager->persist($item);
-            $this->entityManager->flush();
-            return new JsonResponse($item->jsonSerialize(), 200, $headers = ["Content-Type" => "application/json"]);
-            
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], 400);
+                $this->entityManager->persist($item);
+                $this->entityManager->flush();
+                return new JsonResponse($item->jsonSerialize(), 200, $headers = ["Content-Type" => "application/json"]);
+                
+            } catch (\Exception $e) {
+                return new JsonResponse(['error' => $e->getMessage()], 400);
+            }
+        } else{
+            return new JsonResponse(["error"=>"debes estar logueado"], 401, $headers = ["debes estar logueado"]);
         }
     }
 
@@ -154,6 +163,14 @@ class ApiItem extends AbstractController
         return $this->render('item/index.html.twig', [
             'controller_name' => 'ItemController',
         ]);
+    }
+
+    private function estaLog($rol):bool
+    {
+        if (in_array($rol,$this->getUser()->getRoles())) {
+            return true;
+        }
+        return false;
     }
 
 

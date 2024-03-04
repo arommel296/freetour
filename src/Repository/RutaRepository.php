@@ -62,4 +62,23 @@ class RutaRepository extends ServiceEntityRepository
         return $a->getQuery()->getResult();
     }
 
+
+    public function buscarfechaenrango($fechaIniBusqueda, $fechaFinBusqueda, $entityManager)
+    {
+        $qb = $entityManager->createQueryBuilder();
+        return $qb->select('ruta')
+                ->from(Ruta::class, 'ruta')
+                ->join('ruta.tours', 'ruta')
+                ->where(
+                    $qb->expr()->andX(
+                        $qb->expr()->lte('ruta.fecha_ini', ':fechaIniBusqueda'),
+                        $qb->expr()->gte('ruta.fecha_fin', ':fechaFinBusqueda')
+                    )
+                )
+                ->setParameter('fechaIniBusqueda', $fechaIniBusqueda)
+                ->setParameter('fechaFinBusqueda', $fechaFinBusqueda)
+                ->getQuery()
+                ->getResult();
+    }
+
 }

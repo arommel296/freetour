@@ -12,7 +12,7 @@ $(function () {
         }
     });
 
-    // Inicialización dvariables necesarias
+    // Inicialización devariables necesarias
     var $tabs = $("#tabs").tabs(); // Inicializa los tabs con jquery
     var nTabs = $("#tabs > ul > li").length; // Número de tabs
     var atras = $(".atras"); // Botón de tab anterior
@@ -89,7 +89,8 @@ $(function () {
         extensions: ['.jpg', '.jpeg', '.png'],
         imagesInputName: 'Foto',
         maxSize: 2 * 1024 * 1024,
-        maxFiles: 1
+        maxFiles: 1,
+        preloaded: []
     });
 
 
@@ -144,8 +145,8 @@ $(function () {
         width: 700,
         height: 650,
         buttons: {
-            Volver: function() {
-            $("#mapaDialog").dialog( "close" );
+            Volver: function () {
+                $("#mapaDialog").dialog("close");
             }
         },
     });
@@ -167,7 +168,19 @@ $(function () {
         var mapa = L.map('mapid').setView([37.77, -3.79], 15);
 
         // Añade un marcador al mapa por defecto
-        var marker = L.marker([37.77, -3.79]).addTo(mapa);
+        if (coordInicio.val() != "") {
+            var coordenadas = coordInicio.val().split(", ");
+            var lat = parseFloat(coordenadas[0]);
+            var lon = parseFloat(coordenadas[1]);
+            mapa.setView([lat, lon], 17);
+            var marker = L.marker([lat, lon]).addTo(mapa);
+            console.log("punto puesto por defecto");
+            coordUsable.text("Punto establecido en el mapa ✔️");
+        } else {
+            coordUsable.text("Click para desplegar el mapa");
+            var marker = L.marker([37.77, -3.79]).addTo(mapa);
+        }
+
 
         L.tileLayer('https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
             minZoom: 0,
@@ -230,15 +243,26 @@ $(function () {
     }
 
     // let tablaTours = new DataTable($("#tablaTours"));
-    var tablaTours = $('#tablaTours').DataTable({
+    tablaTours = $('#tablaTours').DataTable({
         autoWidth: false,
-        columns: [
-            { width: '20%' },
-            { width: '20%' },
-            { width: '20%' },
-            { width: '20%' },
-            { width: '20%' },
-            { width: '20%' }
+        columns: [{
+                width: '20%'
+            },
+            {
+                width: '20%'
+            },
+            {
+                width: '20%'
+            },
+            {
+                width: '20%'
+            },
+            {
+                width: '20%'
+            },
+            {
+                width: '20%'
+            }
         ],
         scrollY: 150
     });
@@ -373,7 +397,7 @@ $(function () {
                 $("#sortable2").empty();
                 itemDisp.empty(); // Limpia el contenedor de items
                 for (var i = 0; i < data.length; i++) {
-                    itemDisp.append("<li class='ui-state-default' item-id="+data[i].id+"><img src='" + data[i].foto + "' style='width: 30; height: 30'></img>" + data[i].nombre + "</li>");
+                    itemDisp.append("<li class='ui-state-default' item-id=" + data[i].id + "><img src='" + data[i].foto + "' style='width: 30; height: 30'></img>" + data[i].nombre + "</li>");
                 }
             },
             error: function () {
@@ -395,7 +419,7 @@ $(function () {
         success: function (data) {
             selectGuia.empty();
             for (var i = 0; i < data.length; i++) {
-                selectGuia.append("<option value='" + data[i].nombre + "'>" + data[i].nombre + "</option>");
+                selectGuia.append("<option value='" + data[i].id + "'>" + data[i].nombre + "</option>");
             }
         },
         error: function () {
@@ -404,63 +428,183 @@ $(function () {
     });
 
     console.log("eee");
-    
+
     $("#creaRuta").on("click", function (ev) {
         ev.preventDefault();
-        console.log("hola?");
-        guardaRuta();
+
+        let validacion = $('#tabs')[0].valida();
+        if (validacion===true) {
+            console.log("hola?");
+            guardaRuta();
+        } else {
+            creaAlerta("error", "Revise los campos en rojo", "¡Error!");
+        }
+        
     })
+
+    $("#modalTours").dialog({
+        autoOpen: false,
+        modal: true
+    });
 
 
 })
 
 function guardaRuta() {
-        console.log("aaa");
-        //Datos para enviar a la api y crear la ruta
-        var titulo = $('#titulo').val();
-        var descripcion = $('#descripcion').jqxEditor('val');
-        const fotoInput = $('.image-uploader input[type="file"]');
-        const foto = fotoInput[0].files[0];
-        var coordInicio = $('#coord_inicio').val();
-        var aforo = $('#aforo').val();
-        var inicio = $('#inicio').val();
-        var fin = $('#fin').val();
-        var items = [];
-        $('#sortable2 li').each(function () {
-            items.push($(this).attr('item-id'));
-            console.log($(this).attr('item-id'));
-        });
-        var programacion ;
+    var table = $('#tablaTours').DataTable();
+    console.log("aaa");
+    //Datos para enviar a la api y crear la ruta
+    var titulo = $('#titulo').val();
+    var descripcion = $('#descripcion').jqxEditor('val');
+    const fotoInput = $('.image-uploader input[type="file"]');
+    const foto = fotoInput[0].files[0];
+    var coordInicio = $('#coord_inicio').val();
+    var aforo = $('#aforo').val();
+    var inicio = $('#inicio').val();
+    var fin = $('#fin').val();
+    var items = [];
+    $('#sortable2 li').each(function () {
+        items.push($(this).attr('item-id'));
+        console.log($(this).attr('item-id'));
+    });
+    // var programacion;
 
-        console.log(foto);
-        // console.log($('#sortable2 li')[0].attr('item-id'));
-        var formData = new FormData();
-        formData.append('foto', foto, foto.name);
-        formData.append('nombre', titulo);
-        formData.append('descripcion', descripcion);
-        formData.append('coordInicio', coordInicio);
-        formData.append('aforo', aforo);
-        formData.append('inicio', inicio);
-        formData.append('fin', fin);
-        formData.append('items', JSON.stringify(items));
-        // formData.append('programacion', [1]);
-        formData.append('programacion', JSON.stringify(["hola"]));
+    let programacion = [];
+    if (!table.data().any()) {
+        console.log('La tabla no tiene datos');
+    } else {
+        console.log('La tabla tiene datos');
 
-        console.log(formData.get("foto"));
+        $('.dataTables_scroll tbody tr').each(function () {
+            let row = $(this);
+            let fecha_inicio = row.find('td').eq(0).text();
+            let fecha_fin = row.find('td').eq(1).text();
+            let hora = row.find('td').eq(2).text();
+            let dias = row.find('td').eq(3).text().split(', ');
+            let guia = row.find('td').eq(4).text();
 
-        $.ajax({
-            url: '/api/ruta/guardaRuta',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                console.log("éxito");
-                console.log(response);
-            },
-            error: function (error) {
-                console.log("no se ha guardado");
-                console.log(error);
-            }
+            programacion.push({
+                fecha_inicio: fecha_inicio,
+                fecha_fin: fecha_fin,
+                turno: [
+                    [hora, guia]
+                ],
+                dias: dias
+            });
+            console.log(programacion);
         });
     }
+
+
+    console.log(foto);
+    // console.log($('#sortable2 li')[0].attr('item-id'));
+    var formData = new FormData();
+    formData.append('foto', foto, foto.name);
+    formData.append('nombre', titulo);
+    formData.append('descripcion', descripcion);
+    formData.append('coordInicio', coordInicio);
+    formData.append('aforo', aforo);
+    formData.append('inicio', inicio);
+    formData.append('fin', fin);
+    formData.append('items', JSON.stringify(items));
+    // formData.append('programacion', [1]);
+    if (programacion.length !== 0) {
+        formData.append('programacion', JSON.stringify(programacion));
+    }
+
+    console.log(programacion);
+    console.log(formData);
+    console.log(formData.get("foto"));
+
+    $.ajax({
+        url: '/api/ruta/guardaRuta',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response1) {
+            console.log(response1.idRuta);
+            console.log(programacion);
+            if (programacion.length !== 0) {
+                $("#modalTours").dialog("open");
+                console.log("éxito");
+                console.log(response1);
+                $("#crearTours").on("click", function () {
+                    var rutaId = response1.idRuta;
+                    $.ajax({
+                        url: '/api/tour/crear/masivo',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            id: rutaId
+                        }),
+                        contentType: 'application/json',
+                        success: function (response2) {
+                            console.log("Tours creados con éxito");
+                            console.log(response2);
+                            $("#modalTours").dialog("close");
+                            creaAlerta("success", "Tours creados con éxito", "¡Éxito!");
+                        },
+                        error: function (error) {
+                            console.log("No se pudieron crear los tours");
+                            console.log(error);
+                            creaAlerta("error", "No se pudieron crear los tours", "¡Error!");
+                        }
+                    });
+                });
+            }
+                resetForm();
+                // location.reload();
+                creaAlerta("success", "ruta creada con éxito", "¡Éxito!");
+
+        },
+        error: function (error) {
+            console.log("no se ha guardado");
+            console.log(error);
+            creaAlerta("error", "No se pudo crear la ruta", "¡Error!");
+        }
+    });
+}
+
+function creaAlerta(tipo, mensaje, titulo) {
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    toastr[tipo](mensaje, titulo);
+}
+
+function resetForm() {
+    $("#sortable2").empty();
+    $('#titulo').val("");
+    $('#descripcion').jqxEditor('val', '');
+    // $('.uploaded').empty();
+    $('.input-images').empty();
+    $('.input-images').imageUploader({
+        label: 'Arrastra imágenes o haz click para buscarlas en tu almacenamiento',
+        extensions: ['.jpg', '.jpeg', '.png'],
+        imagesInputName: 'Foto',
+        maxSize: 2 * 1024 * 1024,
+        maxFiles: 1,
+    });
+    $('#coord_inicio').val('');
+    $('#coordUsable').text('Click para desplegar el mapa');
+    $('#aforo').val('');
+    $('#inicio').val('');
+    $('#fin').val('');
+    let tabla = $("#tablaTours").DataTable()
+    tabla.clear().draw();
+}

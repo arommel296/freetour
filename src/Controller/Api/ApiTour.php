@@ -13,6 +13,7 @@ use App\Entity\Ruta;
 use App\Entity\Tour;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api/tour')]
 class ApiTour extends AbstractController
@@ -178,6 +179,163 @@ class ApiTour extends AbstractController
         }
         return new JsonResponse($toursJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
+
+
+    #[Route('/crear/masivo', name: 'creaToursAuto', methods: 'POST')]
+    // Crea los tours de la ruta asociados en la programación.
+    public function creaToursAuto(Request $request): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            $id = $data['id'];
+            $ruta = $this->entityManager->find(Ruta::class, $id);
+            $tours = $ruta->getProgramacion();
+
+            // Cambia los días de la semana en español a inglés.
+            $dias = [
+                'lunes' => 'Mon',
+                'martes' => 'Tue',
+                'miercoles' => 'Wed',
+                'jueves' => 'Thu',
+                'viernes' => 'Fri',
+                'sabado' => 'Sat',
+                'domingo' => 'Sun',
+            ];
+
+            // Procesa cada tour de la programación
+            foreach ($tours as $tour) {
+                $this->procesaTours($tour, $dias, $id);
+            }
+
+            $this->entityManager->flush();
+        } catch (\Throwable $th) {
+            // Si ocurre un error, devuelve una respuesta JSON con un mensaje de error
+            return new JsonResponse(["error" => "error al crear los tours: ".$th], 500, $headers = ["Content-Type" => "application/json"]);
+        }
+        // Si todo sale bien, devuelve una respuesta JSON con un 200
+        return $this->json(['message' => 'Tour creado con éxito'], 201);
+    }
+
+    // Esta función cambia días de la semana en español a inglés.
+    // private function cambiaDias(): array
+    // {
+    //     return [
+    //         'lunes' => 'Mon',
+    //         'martes' => 'Tue',
+    //         'miercoles' => 'Wed',
+    //         'jueves' => 'Thu',
+    //         'viernes' => 'Fri',
+    //         'sabado' => 'Sat',
+    //         'domingo' => 'Sun',
+    //     ];
+    // }
+
+    // Esta función procesa los datos de un tour y crea los tours correspondientes en la base de datos.
+    // private function procesaTours(array $tourData, array $dayMap, int $id): void
+    // {
+    //     // Crea objetos DateTime para las fechas de inicio y fin del tour.
+    //     $fecha_inicio = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_inicio']);
+    //     $fecha_fin = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_fin']);
+
+    //     // Cambia los días del tour a su equivalente en inglés.
+    //     $dias = array_map(function ($dia) use ($dayMap) {
+    //         return $dayMap[$dia];
+    //     }, $tourData['dias']);
+
+    //     // Crea un objeto DateTime para el horario del tour y obtiene el ID del guía.
+    //     $horario = \DateTime::createFromFormat('H:i', $tourData['turno'][0][0]);
+    //     $guia = $tourData['turno'][0][1];
+
+    //     // Crea un periodo de tiempo que abarca desde la fecha de inicio hasta la fecha de fin del tour.
+    //     $interval = new \DateInterval('P1D');
+    //     $period = new \DatePeriod($fecha_inicio, $interval, $fecha_fin->modify('+1 day'));
+
+    //     // Para cada día en el periodo de tiempo, si el día coincide con uno de los días del tour, crea un tour para ese día.
+    //     foreach ($period as $date) {
+    //         $dayOfWeek = $date->format('D');
+
+    //         if (in_array($dayOfWeek, $dias)) {
+    //             $this->creaTours($date, $tourData, $id, $guia);
+    //         }
+    //     }
+    // }
+
+    private function procesaTours(array $tourData, array $dias, int $id): void
+    {
+        $fecha_inicio = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_inicio']);
+        $fecha_fin = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_fin']);
+
+        $dias_tour = [];
+        foreach ($tourData['dias'] as $dia) {
+            $dias_tour[] = $dias[$dia];
+        }
+
+        // $horario = \DateTime::createFromFormat('H:i', $tourData['turno'][0][0]);
+        $idGuia = $tourData['turno'][0][1];
+
+        // $fecha_actual = clone $fecha_inicio;
+        $fecha_actual = $fecha_inicio; // inicio de fecha actual al comienzo del periodo de los tours
+        while ($fecha_actual <= $fecha_fin) {
+            $diaSemana = $fecha_actual->format('D'); //Día d ela semana a string
+            if (in_array($diaSemana, $dias_tour)) {
+                $this->creaTours($fecha_actual, $tourData, $id, $idGuia);
+            }
+            $fecha_actual->modify('+1 day'); //Suma 1 día a la fecha actual
+        }
+    }
+
+
+    // Esta función crea un tour en la base de datos.
+    private function creaTours(\DateTime $date, array $tourData, int $id, int $idGuia): void
+    {
+        // Crea un nuevo objeto Tour.
+        $tour = new Tour();
+
+        // Crea un objeto DateTime para la fecha y hora del tour.
+        $tourDateTime = \DateTime::createFromFormat('H:i', $tourData['turno'][0][0]);
+        $tourDateTime->setDate($date->format('Y'), $date->format('m'), $date->format('d'));
+        $tour->setFechaHora($tourDateTime);
+
+        // Busca al usuario (guía) y la ruta en la base de datos y los asigna al tour.
+        $user = $this->entityManager->find(Usuario::class, $idGuia);
+        $tour->setUsuario($user);
+
+        $ruta = $this->entityManager->find(Ruta::class, $id);
+        $tour->setRuta($ruta);
+
+        // Persiste el tour en la base de datos.
+        $this->entityManager->persist($tour);
+    }
+
+    // private function procesaTours(array $tourData, array $dayMap, int $id): void
+    // {
+    //     // Crea objetos DateTime para las fechas de inicio y fin del tour.
+    //     $fecha_inicio = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_inicio']);
+    //     $fecha_fin = \DateTime::createFromFormat('d-m-Y', $tourData['fecha_fin']);
+
+    //     // Cambia los días de la semana en español a inglés usando un bucle foreach en lugar de array_map.
+    //     $dias = [];
+    //     foreach ($tourData['dias'] as $dia) {
+    //         $dias[] = $dayMap[$dia];
+    //     }
+
+    //     // Crea un objeto DateTime para el horario del tour y obtiene el ID del guía.
+    //     $horario = \DateTime::createFromFormat('H:i', $tourData['turno'][0][0]);
+    //     $guia = $tourData['turno'][0][1];
+
+    //     // Crea un periodo de tiempo que abarca desde la fecha de inicio hasta la fecha de fin del tour.
+    //     $interval = new \DateInterval('P1D');
+    //     $period = new \DatePeriod($fecha_inicio, $interval, $fecha_fin->modify('+1 day'));
+
+    //     // Para cada día en el periodo de tiempo, si el día coincide con uno de los días del tour, crea un tour para ese día.
+    //     foreach ($period as $date) {
+    //         $dayOfWeek = $date->format('D');
+    //         if (in_array($dayOfWeek, $dias)) {
+    //             $this->creaTours($date, $tourData, $id, $guia);
+    //         }
+    //     }
+    // }
 
     
 }

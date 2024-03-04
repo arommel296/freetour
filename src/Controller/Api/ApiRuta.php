@@ -124,7 +124,7 @@ class ApiRuta extends AbstractController
                     ->join('itemRuta.item', 'item')
                     ->setFirstResult(($page-1)*9)
                     ->setMaxResults(18);
-        
+
         // $parametros = $request->query->get('localidad');
         // var_dump($parametros);
 
@@ -133,12 +133,12 @@ class ApiRuta extends AbstractController
                         ->andWhere('item.localidad = :localidad')
                         ->setParameter('localidad', $request->query->get('localidad'));
         }
-        
+
         if ($request->query->get('valoracion')) {
             $queryBuilder->andWhere('t.valoracion >= :valoracion')
                ->setParameter('valoracion', $request->query->get('valoracion'));
         }
-    
+
         if ($request->query->get('fecha')) {
             $fecha = new \DateTime($request->query->get('fecha'));
             $queryBuilder->andWhere('t.fecha >= :fecha')
@@ -160,7 +160,6 @@ class ApiRuta extends AbstractController
     public function creaRuta(HttpFoundationRequest $request): Response
     {
         try {
-            $data = $request->getContent();
             // var_dump($request->request->all());
 
             // if ($data) {
@@ -194,7 +193,7 @@ class ApiRuta extends AbstractController
                 }
                 $this->entityManager->persist($ruta);
                 $this->entityManager->flush();
-                return new JsonResponse($ruta->jsonSerialize(), 201, $headers = ["Content-Type" => "application/json"]);
+                return new JsonResponse(["idRuta" => $ruta->getId()], 201, $headers = ["Content-Type" => "application/json"]);
             // } else{
             //     throw new \Exception('No se han recibido datos');
             // }
@@ -204,4 +203,85 @@ class ApiRuta extends AbstractController
         }
 
     }
+
+
+    #[Route('/modificarRuta/{id}', name: 'modificarRuta', methods: ['POST'])]
+    public function modificaRuta($id, HttpFoundationRequest $request): Response
+    {
+        try {
+            $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+
+            if (!$ruta) {
+                throw new \Exception('No se encontró la ruta con id ' . $id);
+            }
+
+            // $foto = $request->files->get('foto');
+            // $nombre = $request->request->get('nombre');
+            // $coordInicio = $request->request->get('coordInicio');
+            // $descripcion = $request->request->get('descripcion');
+            // $inicio = $request->request->get('inicio');
+            // $fin = $request->request->get('fin');
+            // $aforo = intval($request->request->get('aforo'));
+            // $programacion = json_decode($request->request->get('programacion'), true);
+            // $items = json_decode($request->request->get('items'), true);
+
+            // Validaciones
+            if ($request->files->has('foto')) {
+                $foto = $request->files->get('foto');
+                if ($foto){
+                    $fileName = $this->fileUploaderService->upload($foto);
+                    $ruta->setFoto($fileName);
+                }
+
+            }
+
+            if ($request->request->has('nombre')) {
+                $ruta->setNombre($request->request->get('nombre'));
+            }
+
+            if ($request->request->has('descripcion')) {
+                $ruta->setDescripcion($request->request->get('descripcion'));
+            }
+
+            if ($request->request->has('coordInicio')) {
+                $ruta->setCoordInicio($request->request->get('coordInicio'));
+            }
+
+            if ($request->request->has('aforo')) {
+                $ruta->setAforo($request->request->get('aforo'));
+            }
+
+            if ($request->request->has('inicio')) {
+                $ruta->setInicio(new \DateTime($request->request->get('inicio')));
+            }
+
+            if ($request->request->has('fin')) {
+                $ruta->setFin(new \DateTime($request->request->get('fin')));
+            }
+
+            if ($request->request->has('items')) {
+                $items = json_decode($request->request->get('items'), true);
+                foreach ($ruta->getItems() as $item) {
+                    $ruta->removeItem($item);
+                }
+                foreach ($items as $itemId) {
+                    $item = $this->entityManager->getRepository(Item::class)->find($itemId);
+                    $ruta->addItem($item);
+                }
+            }
+
+            if ($request->request->has('programacion')) {
+                $programacion = json_decode($request->request->get('programacion'), true);
+                $ruta->setProgramacion($programacion);
+            }
+
+            $this->entityManager->flush();
+
+            return new JsonResponse(["idRuta" => $ruta->getId()], 200, $headers = ["Content-Type" => "application/json"]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
+    }
+
 }

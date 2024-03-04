@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Usuario;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -14,10 +15,8 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         //UserChecker verifica si el usuario está verificado correctamente o no
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         // $user = $this->getUser();
@@ -26,6 +25,12 @@ class LoginController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
+    }
+
+    #[Route(path: '/afterLogin', name: 'afterLogin')]
+    public function afterLogin(Request $request)
+    {
+        return $this->redirect($request->headers->get('referer'));
     }
 
     #[Route(path: '/logout', name: 'app_logout')]

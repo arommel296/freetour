@@ -1,0 +1,209 @@
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+<script src="{{ asset('estilos/assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/glightbox/js/glightbox.min.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/purecounter/purecounter_vanilla.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/isotope-layout/isotope.pkgd.min.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/swiper/swiper-bundle.min.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/aos/aos.js')}}" defer></script>
+<script src="{{ asset('estilos/assets/vendor/php-email-form/validate.js')}}"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{# <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script> #}
+<script src="{{ asset('estilos/assets/js/main.js')}}" defer></script>
+<script src="{{ asset('static/js/valoracion.js')}}" defer></script>
+{# <script src="{{ asset('static/js/calendarioReserva.js')}}" defer></script> #}
+<link rel="stylesheet" href="{{ asset('static/css/toastr.min.css')}}" />
+<script src="{{ asset('static/js/toastr.min.js')}}"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+    rel="stylesheet">
+<link href="{{ asset('estilos/assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+<link href="{{ asset('estilos/assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+<link href="{{ asset('estilos/assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
+<link href="{{ asset('estilos/assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
+<link href="{{ asset('estilos/assets/vendor/aos/aos.css')}}" rel="stylesheet">
+{# <link href="{{ asset('static/css/slick.css')}}" rel="stylesheet"> #}
+{# <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css"> #}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ asset('estilos/assets/css/main.css')}}">
+<link rel="stylesheet" href="{{ asset('static/css/styleReserva.css')}}">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+    p.clasificacion {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    p.clasificacion input {
+        position: absolute;
+        top: -100px;
+    }
+
+    p.clasificacion label {
+        float: right;
+        color: #333;
+        font-size: x-large;
+    }
+
+    p.clasificacion label:hover,
+    p.clasificacion label:hover~label,
+    p.clasificacion input:checked~label {
+        color: #dd4;
+    }
+</style>
+
+<header id="header" class="header fixed-top d-flex align-items-center"
+    style="box-shadow: 0 0 30px 10px rgba(0, 0, 0, 0.1);">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+
+        <a href="{{path('principal')}}" class="logo d-flex align-items-center me-auto me-xl-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            <h1>Freetours.es</h1>
+            <span></span>
+        </a>
+
+        <!-- Nav Menu -->
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{{path('principal')}}" class="active"><img src="{{ asset('static/img/casaroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Inicio</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/configuracionroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Panel de Administrador</a>
+                </li>
+                {% endif %}
+                {% if is_granted('ROLE_GUIA') %}
+                <ul>
+                    <li class="dropdown has-dropdown"><a class="">Menú Guía</a>
+                        <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                            <li><a href="{{path('calendarioGuia')}}"><img src="{{ asset('static/img/usuario.png') }}"
+                                        alt="Inicio" class="icono" width="28px" height="28px">Mi Calendario</a></li>
+                            <li><a href="{{path('informes')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}"
+                                        alt="Inicio" class="icono" width="28px" height="28px">Informes</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% endif %}
+                {% if is_granted('ROLE_USER') %}
+                <li><a href="{{path('listadoReservas')}}" class="">Mis Reservas</a></li>
+                {% endif %}
+                <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}"
+                            alt="Inicio" class="icono" width="28px" height="28px">Todas las ciudades</a></li>
+            </ul>
+
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav><!-- End Nav Menu -->
+        {% if app.user %}
+        <div class="navmenu">
+
+            <ul>
+                <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
+                    <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}"
+                                    alt="Inicio" class="icono" width="28px" height="28px">Mi Perfil</a></li>
+                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}"
+                                    alt="Inicio" class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+            {# <a class="active">Hola, {{app.user}}</a> #}
+
+        </div>
+        {% else %}
+        <div>
+            <a class="btn-getstarted" href="{{path('app_login')}}"><img src="{{ asset('static/img/accesoblanco.png') }}"
+                    alt="Inicio" class="icono mr-3" width="28px" height="28px"><span>Iniciar Sesión</span></a>
+            <a class="btn-getstarted" href="{{path('app_register')}}"><img
+                    src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
+                    height="28px"><span>Registrarse</span></a>
+        </div>
+
+        {% endif %}
+
+    </div>
+</header><!-- End Header -->
+
+<body class="mt-5" style="padding-top: 5em;">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-6">
+                <h2>{{ reserva.tour.ruta.nombre }}</h2>
+                <img src="{{ asset('fotos/' ~ reserva.tour.ruta.foto) }}" alt="{{ reserva.tour.ruta.nombre }}"
+                    class="img-fluid">
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                {{ form_start(form, {'attr': {'class': 'php-email-form'}}) }}
+                <div class="row gy-4">
+                    <div class="col-md-6">
+                        <label>Nota de la Ruta</label>
+                        {{ form_row(form.notaRuta, {'attr': {'class': 'form-control', 'placeholder': 'Nota Ruta', 'required': 'required'}})
+                        }}
+                        <p class="clasificacion form-control d-flex justify-content-end" style="direction: rtl;">
+                            <input id="radio1R" type="radio" name="estrellasR" value="1">
+                            <label for="radio1R">★</label>
+                            <input id="radio2R" type="radio" name="estrellasR" value="2">
+                            <label for="radio2R">★</label>
+                            <input id="radio3R" type="radio" name="estrellasR" value="3">
+                            <label for="radio3R">★</label>
+                            <input id="radio4R" type="radio" name="estrellasR" value="4">
+                            <label for="radio4R">★</label>
+                            <input id="radio5R" type="radio" name="estrellasR" value="5">
+                            <label for="radio5R">★</label>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nota del Guía</label>
+                        {{ form_row(form.notaGuia, {'attr': {'class': 'form-control', 'placeholder': 'Nota Guía', 'required': 'required'}})
+                        }}
+                        <p class="clasificacion form-control d-flex justify-content-end" style="direction: rtl;">
+                            <input id="radio1G" type="radio" name="estrellasG" value="1">
+                            <label for="radio1G">★</label>
+                            <input id="radio2G" type="radio" name="estrellasG" value="2">
+                            <label for="radio2G">★</label>
+                            <input id="radio3G" type="radio" name="estrellasG" value="3">
+                            <label for="radio3G">★</label>
+                            <input id="radio4G" type="radio" name="estrellasG" value="4">
+                            <label for="radio4G">★</label>
+                            <input id="radio5G" type="radio" name="estrellasG" value="5">
+                            <label for="radio5G">★</label>
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(form.comentario, {'attr': {'class': 'form-control', 'rows': '6', 'placeholder': 'Comentarios', 'required': 'required'}})
+                        }}
+                    </div>
+                    <div>
+                        {{ form_errors(form) }}
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary" style="background-color: #e84545;">Enviar valoración</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{# <body class="mt-5" style="padding-top: 5em;">
+    <div class="container aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+            <div class="col-lg-6">
+                <h2>{{ reserva.tour.ruta.nombre }}</h2>
+                <img src="{{ asset('fotos/' ~ reserva.tour.ruta.foto) }}" alt="{{ reserva.tour.ruta.nombre }}" class="img-fluid">
+            </div>
+            <div class="col-lg-6">
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit" class="btn btn-primary">Enviar valoración</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</body> #}

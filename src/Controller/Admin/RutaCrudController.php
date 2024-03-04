@@ -64,17 +64,39 @@ class RutaCrudController extends AbstractCrudController
             return $action->linkToRoute('creaRuta', []);
         })
         ->update(Crud::PAGE_INDEX, Action::EDIT , function (Action $action) {
-            return $action->linkToCrudAction('editRedirect');
+            return $action->linkToCrudAction('editaRuta');
         });
     }
 
-    #[Route('/editRedirect', name: 'editRedirect')]
-    public function editRedirect(AdminContext $context): Response
+    #[Route('/editaRuta', name: 'editaRuta')]
+    public function editaRuta(AdminContext $context): Response
     {
         $entityInstance = $context->getEntity()->getInstance();
         $id = $entityInstance->getId();
         $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
+        $items = [];
+        foreach ($ruta->getItems() as $item) {
+            $items[] = [
+                'id' => $item->getId(),
+                'nombre' => $item->getNombre(),
+                'descripcion' => $item->getDescripcion(),
+                'foto' => $item->getFoto(),
+                'coordenadas' => $item->getCoordenadas(),
+            ];
+        }
 
+        $rutaData = [
+            'id' => $ruta->getId(),
+            'nombre' => $ruta->getNombre(),
+            'descripcion' => $ruta->getDescripcion(),
+            'coordInicio' => $ruta->getCoordInicio(),
+            'inicio' => $ruta->getInicio(),
+            'fin' => $ruta->getFin(),
+            'foto' => $ruta->getFoto(),
+            'aforo' => $ruta->getAforo(),
+            'items' => $items,
+            'programacion' => $ruta->getProgramacion(),
+        ];
         // $nombre = $ruta->getNombre();
         // $descripcion = $ruta->getDescripcion();
         // $coordInicio = $ruta->getCoordInicio();
@@ -82,8 +104,8 @@ class RutaCrudController extends AbstractCrudController
         // $fin = $ruta->getFin();
         // $foto = $ruta->getFoto();
         // $aforo = $ruta->getAforo();
-        return $this->render('ruta/nuevaRuta.html.twig',[
-            "ruta" => $ruta,
+        return $this->render('ruta/editaRuta.html.twig',[
+            "ruta" => $rutaData,
             // 'titulo' => $nombre,
             // 'coordInicio' => $coordInicio,
             // 'foto' => $foto,

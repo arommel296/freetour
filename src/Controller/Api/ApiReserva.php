@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Usuario;
 use App\Entity\Localidad;
 use App\Entity\Reserva;
+use App\Entity\Tour;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\BrowserKit\Request;
@@ -71,6 +72,21 @@ class ApiReserva extends AbstractController
         return new JsonResponse($reservaJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    #[Route('/tour/{id}', name: 'reservasPorTour', methods: 'GET')]
+    public function reservasPorTour($id): Response
+    {
+        $tour = $this->entityManager->getRepository(Tour::class)->find($id);
+        $reservas = $this->entityManager->getRepository(Reserva::class)->findBy(['tour' => $tour]);
+        $reservasJson=[];
+        foreach ($reservas as $reserva) {
+            $reservasJson[]=$reserva->jsonSerialize();
+        }
+        if ($reservasJson == []) {
+            return new Response(null, 404, $headers = ["no se han encontrado reservas"]);
+        }
+        return new JsonResponse($reservasJson, 200, $headers = ["Content-Type" => "application/json"]);
+    }
+
     #[Route('/guardaReserva', name: 'guardaReserva', methods: ['POST'])]
     public function creaReserva(HttpFoundationRequest $request): Response
     {
@@ -104,4 +120,27 @@ class ApiReserva extends AbstractController
         }
 
     }
+
+    #[Route('/cancelaReserva', name: 'cancelaReserva', methods: ['DELETE'])]
+    public function cancelaReserva(HttpFoundationRequest $request): Response
+    {
+        try {
+            $idReserva = $request->request->get('idReserva');
+            $reserva = $this->entityManager->getRepository(Reserva::class)->find($idReserva);
+    
+            if (!$reserva) {
+                throw new \Exception('Reserva no encontrada');
+            }
+    
+            $this->entityManager->remove($reserva);
+            $this->entityManager->flush();
+    
+            return new JsonResponse(["success" => "reserva borrada"], 200, $headers = ["Content-Type" => "application/json"]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        }
+
+    }
+
+
 }

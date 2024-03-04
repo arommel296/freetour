@@ -36,7 +36,7 @@ class Tour implements JsonSerializable
     private ?Ruta $ruta = null;
 
     #[ORM\Column]
-    private ?bool $disponible = false;
+    private ?bool $disponible = true;
     //si pongo el atributo $disponible a true, el tour estará disponible por defecto?
 
     public function __construct()

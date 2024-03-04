@@ -1,3 +1,4 @@
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
 <script src="{{ asset('estilos/assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}" defer></script>
 <script src="{{ asset('estilos/assets/vendor/glightbox/js/glightbox.min.js')}}" defer></script>
@@ -9,7 +10,11 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 {# <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script> #}
 <script src="{{ asset('estilos/assets/js/main.js')}}" defer></script>
+<script src="{{ asset('static/js/listadoReserva.js')}}" defer></script>
 {# <script src="{{ asset('static/js/calendarioReserva.js')}}" defer></script> #}
+<script src="{{ asset('static/js/toastr.min.js')}}" defer></script>
+<link rel="stylesheet" href="{{ asset('static/css/toastr.min.css')}}" />
+
 
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -33,15 +38,15 @@
     style="box-shadow: 0 0 30px 10px rgba(0, 0, 0, 0.1);">
     <div class="container-fluid d-flex align-items-center justify-content-between">
 
-        <a href="{{path('principal')}}" class="logo d-flex align-items-center me-auto me-xl-0">
-            <!-- Uncomment the line below if you also wish to use an image logo -->
-            <!-- <img src="assets/img/logo.png" alt=""> -->
-            <h1>Freetours.es</h1>
-            <span></span>
-        </a>
+        <div class="d-flex align-items-center justify-content-start">
+            <a href="{{path('principal')}}" class="logo d-flex align-items-center">
+                <h1>Freetours.es</h1>
+                <span></span>
+            </a>
+        </div>
 
         <!-- Nav Menu -->
-        <nav id="navmenu" class="navmenu">
+        <nav id="navmenu" class="navmenu d-flex justify-content-center">
             <ul>
                 <li><a href="{{path('principal')}}" class="active"><img src="{{ asset('static/img/casaroja.png') }}"
                             alt="Inicio" class="icono" width="28px" height="28px">Inicio</a></li>
@@ -67,36 +72,34 @@
                 {% endif %}
                 <li><a href="{{path('admin')}}" class=""><img src="{{ asset('static/img/buscarroja.png') }}"
                             alt="Inicio" class="icono" width="28px" height="28px">Todas las ciudades</a></li>
+                {% if app.user %}
+                <ul style="padding-left: 20em;">
+                    <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
+                        <ul class="dd-box-shadow" style="right: 0; left: auto;">
+                            <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}"
+                                        alt="Inicio" class="icono" width="28px" height="28px">Mi Perfil</a></li>
+                            <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}"
+                                        alt="Inicio" class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% else %}
+                <div>
+                    <a class="btn-getstarted" href="{{path('app_login')}}"><img
+                            src="{{ asset('static/img/accesoblanco.png') }}" alt="Inicio" class="icono mr-3"
+                            width="28px" height="28px"><span>Iniciar Sesión</span></a>
+                    <a class="btn-getstarted" href="{{path('app_register')}}"><img
+                            src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3"
+                            width="28px" height="28px"><span>Registrarse</span></a>
+                </div>
+
+                {% endif %}
             </ul>
 
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav><!-- End Nav Menu -->
-        {% if app.user %}
-        <div class="navmenu">
+        
 
-            <ul>
-                <li class="dropdown has-dropdown"><a class="">Hola, {{app.user}}</a>
-                    <ul class="dd-box-shadow" style="right: 0; left: auto;">
-                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/usuario.png') }}"
-                                    alt="Inicio" class="icono" width="28px" height="28px">Mi Perfil</a></li>
-                        <li><a href="{{path('app_logout')}}"><img src="{{ asset('static/img/cerrar-sesion.png') }}"
-                                    alt="Inicio" class="icono" width="28px" height="28px">Cerrar Sesión</a></li>
-                    </ul>
-                </li>
-            </ul>
-            {# <a class="active">Hola, {{app.user}}</a> #}
-
-        </div>
-        {% else %}
-        <div>
-            <a class="btn-getstarted" href="{{path('app_login')}}"><img src="{{ asset('static/img/accesoblanco.png') }}"
-                    alt="Inicio" class="icono mr-3" width="28px" height="28px"><span>Iniciar Sesión</span></a>
-            <a class="btn-getstarted" href="{{path('app_register')}}"><img
-                    src="{{ asset('static/img/usuariosblanco.png') }}" alt="Inicio" class="icono mr-3" width="28px"
-                    height="28px"><span>Registrarse</span></a>
-        </div>
-
-        {% endif %}
 
     </div>
 </header><!-- End Header -->
@@ -107,43 +110,57 @@
     <main id="main" style="padding-top: 5em;">
         <section id="portfolio-details" class="portfolio-details">
 
-            {# <div class="container aos-init aos-animate" data-aos="fade-up">
-
-                {% for reserva in reservas %}
-                    
-                {% endfor %}
-
-
-            </div> #}
-
             <div class="container aos-init aos-animate" data-aos="fade-up">
-                {# <p>{{reservas[0].fechaHora}}</p> #}
                 {% if reservas|length > 0 %}
-                <table class="table table-striped">
+                <table class="table table-striped w-100">
                     <thead>
                         <tr>
-                            <th scope="col">Fecha y hora</th>
-                            <th scope="col">Número de entradas</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col" class="text-center w-25 align-middle">Ruta</th>
+                            <th scope="col" class="text-center w-25 align-middle">Fecha y hora</th>
+                            <th scope="col" class="text-center w-25 align-middle">Número de entradas</th>
+                            <th scope="col" class="text-center w-25 align-middle">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-
-                        {# {% for reserva in reservas %}
+                    {# <tbody>
+                        {% for reserva in reservas %}
                         <tr>
-                            <td>{{ reserva.fechaHora|date('Y-m-d H:i') }}</td>
-                            <td>{{ reserva.numeroEntradas }}</td>
-                            <td>
-                                <a href="{{ path('admin', {'id': reserva.id}) }}" class="btn btn-primary">Modificar</a>
-                                <a href="{{ path('admin', {'id': reserva.id}) }}" class="btn btn-secondary">Valorar</a>
+                            <td class="text-center align-middle"><img
+                                    src="{{ asset('fotos/' ~ reserva.tour.ruta.foto) }}" alt="" style="width: 20%">
+                                {{ reserva.tour.ruta.nombre }}</td>
+                            <td class="text-center align-middle">{{ reserva.tour.fechaHora|date('d-m-Y H:i') }}</td>
+                            <td class="text-center align-middle">{{ reserva.nEntradas }}</td>
+                            <td class="text-center align-middle">
+                                {% if reserva.tour.fechaHora < date() %}
+                                <a href="{{ path('valorar', {'id': reserva.id}) }}"
+                                    class="btn btn-secondary">Valorar</a>
+                                {% else %}
+                                <a href="{{ path('cancelaReserva', {'id': reserva.id}) }}"
+                                    class="btn btn-primary">Cancelar</a>
+                                {% endif %}
                             </td>
                         </tr>
-                        {% endfor %} #}
-
-
-
-
-
+                        {% endfor %}
+                    </tbody> #}
+                    <tbody>
+                        {% for reserva in reservas %}
+                        <tr>
+                            <td class="text-center align-middle"><img
+                                    src="{{ asset('fotos/' ~ reserva.tour.ruta.foto) }}" alt=""
+                                    style="width: 20%">{{ reserva.tour.ruta.nombre }}</td>
+                            <td class="text-center align-middle">{{ reserva.tour.fechaHora|date('d-m-Y H:i') }}</td>
+                            <td class="text-center align-middle">{{ reserva.nEntradas }}</td>
+                            <td class="text-center align-middle">
+                                {% if reserva.tour.fechaHora < date() %}
+                                <a href="{{ path('valorar', {'id': reserva.id}) }}" class="btn btn-secondary"
+                                    style="background-color: #13af6e;">Valorar</a>
+                                {% else %}
+                                <button class="btn btn-primary cancel-reservation"
+                                    data-reservation-id="{{ reserva.id }}"
+                                    style="background-color: #e84545;">Cancelar</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 {% else %}

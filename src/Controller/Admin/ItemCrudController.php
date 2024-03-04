@@ -38,10 +38,10 @@ class ItemCrudController extends AbstractCrudController
         // ->add(Crud::PAGE_INDEX, Action::DETAIL)
         ->update(Crud::PAGE_INDEX, Action::NEW , function (Action $action) {
             return $action->linkToRoute('creaItem', []);
-        })
-        ->update(Crud::PAGE_INDEX, Action::EDIT , function (Action $action) {
-            return $action->linkToCrudAction('editRedirect');
         });
+        // ->update(Crud::PAGE_INDEX, Action::EDIT , function (Action $action) {
+        //     return $action->linkToCrudAction('editaRuta');
+        // });
     }
 
     #[Route('/creaItem', name: 'creaItem')]

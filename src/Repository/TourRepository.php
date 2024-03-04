@@ -79,9 +79,45 @@ class TourRepository extends ServiceEntityRepository
         $tour = $this->find($tourId);
         $aforo = $tour->getRuta()->getAforo();
     
-        $plazasDisponibles = $aforo - ($reservasTotales[0][1] ?? 0);
+        // $plazasDisponibles = $aforo - ($reservasTotales[0][1] ?? 0);
+        if (isset($reservasTotales[0][1])) {
+            $plazasDisponibles = $aforo - $reservasTotales[0][1];
+        } else {
+            $plazasDisponibles = $aforo;
+        }
     
         return $plazasDisponibles;
     }
+
+    public function findToursByUser($user, $inicio, $fin){
+        return $this->createQueryBuilder('tour')
+            ->where('tour.usuario = :usuario')
+            ->andWhere('tour.fechaHora >= :start')
+            ->andWhere('tour.fechaHora < :end')
+            ->setParameter('usuario', $user)
+            ->setParameter('start', $inicio)
+            ->setParameter('end', $fin)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // public function findToursByUser($user, $inicio, $fin){
+    //     $subQuery = $this->createQueryBuilder('tour2')
+    //         ->select('reserva')
+    //         ->from('App:Reserva', 'reserva')
+    //         ->where('reserva.tour = tour2')
+    //         ->getDQL();
+    
+    //     return $this->createQueryBuilder('tour')
+    //         ->where('tour.usuario = :usuario')
+    //         ->andWhere('tour.fechaHora >= :start')
+    //         ->andWhere('tour.fechaHora < :end')
+    //         ->andWhere('EXISTS(' . $subQuery . ')')
+    //         ->setParameter('usuario', $user)
+    //         ->setParameter('start', $inicio)
+    //         ->setParameter('end', $fin)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
 }

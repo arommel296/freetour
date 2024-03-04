@@ -10,8 +10,11 @@ use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ReservaType extends AbstractType
 {
@@ -32,6 +35,23 @@ class ReservaType extends AbstractType
 
         $builder
             ->add('nEntradas')
+
+            // ->add('nEntradas', NumberType::class, [
+            //     // 'type' => NumberType::class,
+            //     'invalid_message' => 'Debe ser un número entero',
+            //     'required' => true,
+            //     'constraints' => [
+            //         new NotBlank([
+            //             'message' => 'Por favor introduce un número entero positivo',
+            //         ]),
+            //         new Length([
+            //             'min' => 1,
+            //             'minMessage' => 'El número de entradas no puede ser menor de 1',
+            //             'max' => 1,
+            //         ]),
+            //     ]
+            // ])
+
             // ->add('nAsistentes')
             // ->add('fechaReserva')
             // ->add('tour', EntityType::class, [

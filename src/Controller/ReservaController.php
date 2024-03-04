@@ -47,6 +47,7 @@ class ReservaController extends AbstractController
         // $valoracion = new Valoracion();
         $form = $this->createForm(ReservaType::class, $reserva, [
             'ruta_id' => $id,
+            "label" => "Número de asistentes"
         ]);
         $form->handleRequest($request);
 
@@ -96,11 +97,11 @@ class ReservaController extends AbstractController
         //     return new Response($th, 404, $headers = ["no se han encontrado tours"]);
         // }
 
-        return new JsonResponse($reservasJson, 200, $headers = ["no se han encontrado tours"]);
+        // return new JsonResponse($reservasJson, 200, $headers = ["no se han encontrado tours"]);
 
-        // return $this->render('reservas/listadoReservas.html.twig', [
-        //     'reservas' => $reservas,
-        // ]);
+        return $this->render('reservas/listadoReservas.html.twig', [
+            'reservas' => $reservas,
+        ]);
 
         // return new JsonResponse($reservasJson, 201, $headers = ["no se han encontrado tours"]);
 

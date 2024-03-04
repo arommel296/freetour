@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/api/usuario')]
@@ -52,32 +53,42 @@ class UsuarioController extends AbstractController
     #[Route('/guias', name: 'getGuias', methods: ['GET'])]
     public function getGuias(): JsonResponse
     {
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
-        
-        $users = [];
-        foreach($usuarios as $usuario){
-            if (in_array("ROLE_GUIA", $usuario->getRoles())) {
-                $users[] = $usuario->jsonSerialize();
+        if ($this->estaLog('ROLE_ADMIN')) {
+            $this->getUser();
+            $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+            
+            $users = [];
+            foreach($usuarios as $usuario){
+                if (in_array("ROLE_GUIA", $usuario->getRoles())) {
+                    $users[] = $usuario->jsonSerialize();
+                }
             }
+            if ($users==[]) {
+                return new JsonResponse(null, 404, $headers = ["no se han encontrado guias"]);
+            }
+            return new JsonResponse($users, 200, ["Content-Type" => "application/json"]);
+        } else{
+            return new JsonResponse(["error"=>"debes estar logueado"], 401, $headers = ["debes estar logueado"]);
         }
-        if ($users==[]) {
-            return new JsonResponse(null, 404, $headers = ["no se han encontrado guias"]);
-        }
-        return new JsonResponse($users, 200, ["Content-Type" => "application/json"]);
+        
     }
 
     #[Route('/all', name: 'getUsuarios', methods: ['GET'])]
     public function getUsuarios(): JsonResponse
     {
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
-        $users = [];
-        foreach($usuarios as $usuario){
-            $users[] = $usuario->jsonSerialize();
+        if ($this->estaLog('ROLE_ADMIN')) {
+            $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+            $users = [];
+            foreach($usuarios as $usuario){
+                $users[] = $usuario->jsonSerialize();
+            }
+            if ($users==[]) {
+                return new JsonResponse(null, 404, $headers = ["no se han encontrado usuarios"]);
+            }
+            return new JsonResponse($users, 200, ["Content-Type" => "application/json"]);
+        }else{
+            return new JsonResponse(["error"=>"debes estar logueado"], 401, $headers = ["debes estar logueado"]);
         }
-        if ($users==[]) {
-            return new JsonResponse(null, 404, $headers = ["no se han encontrado usuarios"]);
-        }
-        return new JsonResponse($users, 200, ["Content-Type" => "application/json"]);
     }
 
     public function index(): Response
@@ -85,6 +96,14 @@ class UsuarioController extends AbstractController
         return $this->render('usuario/index.html.twig', [
             'controller_name' => 'UsuarioController',
         ]);
+    }
+
+    private function estaLog($rol):bool
+    {
+        if (in_array($rol,$this->getUser()->getRoles())) {
+            return true;
+        }
+        return false;
     }
 }
 

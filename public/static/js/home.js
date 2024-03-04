@@ -1,6 +1,6 @@
 $(function () {
 
-    var buscar = $("input[type=search]");
+    var buscar = $("#buscaPorLoc");
     buscar.autocomplete({
         source: function (request, response) {
             //petición ajax para obtener los datos
@@ -24,7 +24,7 @@ $(function () {
 
         select: function (event, ui) {
             console.log("Loclaidad seleccionada: " + ui.item.value + " con id: " + ui.item.id);
-            traeItems(ui.item.id);
+            // traeItems(ui.item.id);
         }
     });
 

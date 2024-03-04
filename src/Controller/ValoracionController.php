@@ -33,31 +33,78 @@ class ValoracionController extends AbstractController
     {
         $reserva = $this->entityManager->getRepository(Reserva::class)->find($id);
 
-        $valoracion = new Valoracion();
+        if (!$reserva) {
+            throw $this->createNotFoundException('No se encontró la reserva con id '.$id);
+        }
 
-        $form = $this->createForm(ValoracionType::class, $valoracion, [
-            'reserva_id' => $id,
-        ]);
+        // Buscar una valoración existente para la reserva
+        $valoracion = $this->entityManager->getRepository(Valoracion::class)->findOneBy(['reserva' => $reserva]);
+
+        // Si no existe una valoración, crear una nueva
+        if (!$valoracion) {
+            $valoracion = new Valoracion();
+            $valoracion->setReserva($reserva);
+        }
+
+        $form = $this->createForm(ValoracionType::class, $valoracion);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $tourId = $request->get('tourId');
-            $tour = $this->entityManager->getRepository(Tour::class)->find($tourId);
-            $valoracion->setTour($tour);
-            $valoracion->setUsuario($this->getUser());
-            $nEntradas = $form->get('nEntradas')->getData();
-            $valoracion->setNEntradas($nEntradas);
-            $valoracion->setFechaReserva(new DateTime());
-
             $this->entityManager->persist($valoracion);
             $this->entityManager->flush();
 
             return $this->redirectToRoute('principal');
         }
+
         return $this->render('valoracion/valoracion.html.twig', [
             'reserva' => $reserva,
             'form' => $form->createView(),
         ]);
     }
+
+    // #[Route('/valorar/reserva/{id}/formulario', name: 'valorar_formulario')]
+    // public function valorarFormulario($id): Response
+    // {
+    //     $reserva = $this->entityManager->getRepository(Reserva::class)->find($id);
+
+    //     if (!$reserva) {
+    //         throw $this->createNotFoundException('No se encontró la reserva con id '.$id);
+    //     }
+
+    //     $valoracion = new Valoracion();
+    //     $valoracion->setReserva($reserva);
+
+    //     $form = $this->createForm(ValoracionType::class, $valoracion);
+
+    //     return $this->render('valoracion/valoracion.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
+
+    // #[Route('/valorar/reserva/{id}', name: 'valorar')]
+    // public function valorar($id, Request $request): Response
+    // {
+    //     $reserva = $this->entityManager->getRepository(Reserva::class)->find($id);
+
+    //     if (!$reserva) {
+    //         throw $this->createNotFoundException('No se encontró la reserva con id '.$id);
+    //     }
+
+    //     $valoracion = new Valoracion();
+    //     $valoracion->setReserva($reserva);
+
+    //     $form = $this->createForm(ValoracionType::class, $valoracion);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $this->entityManager->persist($valoracion);
+    //         $this->entityManager->flush();
+
+    //         return $this->redirectToRoute('principal');
+    //     }
+
+    //     // Si el formulario no es válido o no se ha enviado, redirige de nuevo al formulario
+    //     return $this->redirectToRoute('valorar_formulario', ['id' => $id]);
+    // }
 
 }
