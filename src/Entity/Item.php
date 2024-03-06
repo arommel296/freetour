@@ -6,6 +6,7 @@ use App\Repository\ItemRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
 #[Broadcast]
@@ -17,15 +18,19 @@ class Item
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $coordenadas = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $descripcion = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $foto = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]

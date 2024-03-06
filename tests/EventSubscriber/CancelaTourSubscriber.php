@@ -22,8 +22,28 @@ class CancelaTourSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EventoCancelaTour::class => 'onTourDisponible',
+            EventoCancelaTour::NAME => 'onTourDisponible',
         ];
     }
 
+    // public function onTourDisponible(EventoCancelaTour $event)
+    // {
+    //     $tour = $event->getTour();
+
+    //     if (!$tour->isDisponible() && count($tour->getReservas()) > 0) {
+    //         $this->correoManager->notifyOfSiteUpdate();
+    //     }
+    // }
+
+    // public function onTourDisponible(EventoCancelaTour $event)
+    // {
+    //     $reservas = $event->getTour()->getReservas();
+
+    //     // if (!$tour->isDisponible() && count($tour->getReservas()) > 0) {
+    //     //     $this->correoManager->sendEmail("hola@gmail.com", "Tour cancelado", "el tour que tenía reservado ha sido cancelado");
+    //     // }
+    //     foreach ($reservas as $reserva) {
+    //         $this->correoManager->sendEmail($reserva->getUsuario()->getEmail(), "Tour cancelado", "El tour que tenía reservado ha sido cancelado");
+    //     }
+    // }
 }

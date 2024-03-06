@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReservaRepository::class)]
 #[Broadcast]
@@ -20,6 +21,7 @@ class Reserva implements JsonSerializable
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?int $nEntradas = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservas')]
@@ -64,6 +66,28 @@ class Reserva implements JsonSerializable
 
         return $this;
     }
+
+
+    // public function setNEntradas(int $nEntradas): static
+    // {
+    //     $aforoTotal = $this->getTour()->getRuta()->getAforo();
+
+    //     $reservas = $this->getTour()->getReservas();
+    //     $entradasReservadas = 0;
+    //     foreach ($reservas as $reserva) {
+    //         $entradasReservadas += $reserva->getNEntradas();
+    //     }
+
+    //     $entradasDisponibles = $aforoTotal - $entradasReservadas;
+
+    //     if ($nEntradas <= $entradasDisponibles) {
+    //         $this->nEntradas = $nEntradas;
+    //     } else {
+    //         throw new \Exception('No hay suficientes entradas disponibles');
+    //     }
+
+    //     return $this;
+    // }
 
     public function getTour(): ?Tour
     {

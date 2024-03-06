@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Ruta;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -63,22 +64,34 @@ class RutaRepository extends ServiceEntityRepository
     }
 
 
-    public function buscarfechaenrango($fechaIniBusqueda, $fechaFinBusqueda, $entityManager)
+    public function buscarfechaenrango($fechaBusqueda)
     {
-        $qb = $entityManager->createQueryBuilder();
+        $qb = $this->createQueryBuilder('ruta');
         return $qb->select('ruta')
-                ->from(Ruta::class, 'ruta')
-                ->join('ruta.tours', 'ruta')
-                ->where(
-                    $qb->expr()->andX(
-                        $qb->expr()->lte('ruta.fecha_ini', ':fechaIniBusqueda'),
-                        $qb->expr()->gte('ruta.fecha_fin', ':fechaFinBusqueda')
-                    )
-                )
-                ->setParameter('fechaIniBusqueda', $fechaIniBusqueda)
-                ->setParameter('fechaFinBusqueda', $fechaFinBusqueda)
-                ->getQuery()
-                ->getResult();
+        ->from(Ruta::class, 'ruta')
+        ->where(
+
+            $qb->expr()->andX(
+                $qb->expr()->lte('ruta.fecha_ini', ':fechaBusqueda'),
+                $qb->expr()->gte('ruta.fecha_fin', ':fechaBusqueda')
+            )
+        )
+        ->setParameter('fechaBusqueda', $fechaBusqueda)
+        ->getQuery()
+        ->getResult();
+        ;
+    }
+
+    public function findByItemLocalidad($localidad): array
+    {
+        return $this->createQueryBuilder('r')
+                    ->join('r.item', 'i') 
+                    ->join('i.localidad', 'l') 
+                    ->andWhere("l.nombre LIKE :localidad")
+                    ->setParameter('localidad', $localidad)
+                    ->getQuery()
+                    ->getResult()
+        ;
     }
 
 }

@@ -124,6 +124,9 @@ class ApiItem extends AbstractController
         return new JsonResponse($itemJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    /**
+     * @IsGranted("ROLE_ADMIN")
+     */
     #[Route('/guardaItem', name: 'guardaItem', methods: ['POST'])]
     public function guardaItem(HttpFoundationRequest $request): Response
     {

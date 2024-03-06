@@ -6,6 +6,7 @@ use App\Repository\ValoracionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ValoracionRepository::class)]
 #[Broadcast]
@@ -17,9 +18,21 @@ class Valoracion
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: 'La valoración del guía debe estar entre {{ min }} estrellas y {{ max }} estrellas',
+    )]
     private ?int $notaGuia = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: 'La valoración de la ruta debe estar entre {{ min }} estrellas y {{ max }} estrellas',
+    )]
     private ?int $notaRuta = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

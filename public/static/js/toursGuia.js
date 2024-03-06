@@ -14,7 +14,7 @@ $(function () {
             form.append('<input type="file" class="form-control mb-3" name="foto">');
             reservas.forEach(function (reserva) {
                 form.append('<div class="reserva mb-3">' +
-                    '<p>Reserva ' + reserva.id + ', asistentes esperados: ' + reserva.nEntradas + '</p>' +
+                    '<p>Reserva: ' + reserva.usuario.nombre + ' '+ reserva.usuario.apellidos + ', asistentes esperados: ' + reserva.nEntradas + '</p>' +
                     '<input type="number" class="form-control" name="reserva_' + reserva.id + '" placeholder="Asistentes finales" data-valida="numero">' +
                     '</div>');
             });

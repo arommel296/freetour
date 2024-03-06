@@ -87,6 +87,9 @@ class ApiReserva extends AbstractController
         return new JsonResponse($reservasJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    /**
+     * @IsGranted("ROLE_USER")
+     */
     #[Route('/guardaReserva', name: 'guardaReserva', methods: ['POST'])]
     public function creaReserva(HttpFoundationRequest $request): Response
     {
@@ -121,6 +124,9 @@ class ApiReserva extends AbstractController
 
     }
 
+    /**
+     * @IsGranted("ROLE_USER")
+     */
     #[Route('/cancelaReserva', name: 'cancelaReserva', methods: ['DELETE'])]
     public function cancelaReserva(HttpFoundationRequest $request): Response
     {

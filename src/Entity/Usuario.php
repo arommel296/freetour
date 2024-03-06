@@ -40,12 +40,15 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
     private ?string $password = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $apellidos = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $foto = null;
 
     #[ORM\Column(type: 'boolean')]

@@ -6,6 +6,8 @@ use App\Repository\InformeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: InformeRepository::class)]
 #[Broadcast]
@@ -23,6 +25,7 @@ class Informe
     private ?string $observaciones = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?float $dinero = null;
 
     #[ORM\OneToOne(inversedBy: 'informe', cascade: ['persist', 'remove'])]

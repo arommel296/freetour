@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use App\Event\EventoCancelaTour;
 use App\Repository\TourRepository;
+use App\Service\CorreoManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 use JsonSerializable;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TourRepository::class)]
 #[Broadcast]
@@ -20,6 +24,7 @@ class Tour implements JsonSerializable
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $fechaHora = null;
 
     #[ORM\OneToMany(mappedBy: 'tour', targetEntity: Reserva::class)]
@@ -37,7 +42,7 @@ class Tour implements JsonSerializable
 
     #[ORM\Column]
     private ?bool $disponible = true;
-    //si pongo el atributo $disponible a true, el tour estará disponible por defecto?
+    //si pongo el atributo $disponible a true, el tour estará disponible por defecto
 
     public function __construct()
     {
@@ -153,12 +158,23 @@ class Tour implements JsonSerializable
         return $this->disponible;
     }
 
-    public function setDisponible(bool $disponible): static
-    {
-        $this->disponible = $disponible;
+    // public function setDisponible(bool $disponible): static
+    // {
+    //     $this->disponible = $disponible;
 
-        return $this;
+    //     return $this;
+    // }
+
+    public function setDisponible(bool $disponible)
+{
+    if ($this->disponible === true && $disponible === false) {
+        $event = new EventoCancelaTour($this);
+        $dispatcher = new EventDispatcher();
+        $dispatcher->dispatch($event);
     }
+
+    $this->disponible = $disponible;
+}
 
     public function __toString(): string
     {

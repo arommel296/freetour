@@ -10,14 +10,14 @@ class FileUploaderService
 {
     public function __construct(
         private string $targetDirectory,
-        private SluggerInterface $slugger, //para generar un numbre
+        private SluggerInterface $slugger, //para generar un nombre seguro
     ) {
     }
 
     public function upload(UploadedFile $file): string
     {
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $this->slugger->slug($originalFilename);
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); //nombre original
+        $safeFilename = $this->slugger->slug($originalFilename); //nombre seguro
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
         try {

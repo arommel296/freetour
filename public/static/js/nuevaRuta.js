@@ -433,13 +433,13 @@ $(function () {
         ev.preventDefault();
 
         let validacion = $('#tabs')[0].valida();
-        if (validacion===true) {
+        if (validacion === true) {
             console.log("hola?");
             guardaRuta();
         } else {
             creaAlerta("error", "Revise los campos en rojo", "¡Error!");
         }
-        
+
     })
 
     $("#modalTours").dialog({
@@ -469,6 +469,22 @@ function guardaRuta() {
     });
     // var programacion;
 
+    let hasError = false;
+
+    if (!foto) {
+        creaAlerta("error", "Debe subir una imagen", "¡Error!");
+        hasError = true;
+    }
+
+    if (!items || items.length === 0) {
+        creaAlerta("error", "Debe añadir al menos un item", "¡Error!");
+        hasError = true;
+    }
+
+    if (hasError) {
+        return;
+    }
+
     let programacion = [];
     if (!table.data().any()) {
         console.log('La tabla no tiene datos');
@@ -495,7 +511,7 @@ function guardaRuta() {
         });
     }
 
-
+    
     console.log(foto);
     // console.log($('#sortable2 li')[0].attr('item-id'));
     var formData = new FormData();
@@ -552,9 +568,9 @@ function guardaRuta() {
                     });
                 });
             }
-                resetForm();
-                // location.reload();
-                creaAlerta("success", "ruta creada con éxito", "¡Éxito!");
+            resetForm();
+            // location.reload();
+            creaAlerta("success", "ruta creada con éxito", "¡Éxito!");
 
         },
         error: function (error) {
@@ -574,7 +590,7 @@ function creaAlerta(tipo, mensaje, titulo) {
         "positionClass": "toast-top-center",
         "preventDuplicates": false,
         "onclick": null,
-        "showDuration": "300",
+        "showDuration": "3000",
         "hideDuration": "1000",
         "timeOut": "5000",
         "extendedTimeOut": "1000",

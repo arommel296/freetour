@@ -29,6 +29,9 @@ class ApiInformeLista extends AbstractController
         $this->fileUploaderService = $fileUploaderService;
     }
 
+    /**
+     * @IsGranted("ROLE_ADMIN") or ("ROLE_GUIA")
+     */
     #[Route('/guardar', name: 'guardaInformeLista', methods: ['POST'])]
     public function guardaInformeLista(Request $request): Response
     {

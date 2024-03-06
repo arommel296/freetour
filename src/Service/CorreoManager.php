@@ -8,6 +8,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Snappy\Pdf;
+use Knp\Bundle\SnappyBundle\KnpSnappyBundle;
 
 class CorreoManager extends AbstractController
 {
@@ -15,7 +17,8 @@ class CorreoManager extends AbstractController
         private MessageGenerator $messageGenerator,
         private MailerInterface $mailer,
         private EntityManagerInterface $entityManager,
-        private string $adminEmail
+        private string $adminEmail,
+        private Pdf $knpSnappyPdf
     ) {
     }
 
@@ -54,5 +57,30 @@ class CorreoManager extends AbstractController
         $this->mailer->send($email);
 
         return false;
+    }
+
+    public function sendEmailPdf($correo, $subject, $text, $plantilla): bool
+    {
+        // Generación del pdf
+        $pdf = $this->knpSnappyPdf->getOutputFromHtml($plantilla);
+
+        // Guardado del pdf en un archivo temporal
+        $pdfPath = tempnam(sys_get_temp_dir(), 'pdf_');
+        file_put_contents($pdfPath, $pdf);
+
+        // Creación del correo electrónico con el pdf adjunto
+        $email = (new Email())
+            ->from($this->adminEmail)
+            ->to($correo)
+            ->subject($subject)
+            ->text($text)
+            ->attachFromPath($pdfPath, 'reserva.pdf'); //Adjunta el archivo temproal
+
+        $this->mailer->send($email);
+
+        // Eliminación del archivo temporal
+        unlink($pdfPath);
+
+        return true;
     }
 }

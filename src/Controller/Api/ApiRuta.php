@@ -12,16 +12,20 @@ use App\Entity\Localidad;
 use App\Entity\Ruta;
 use App\Service\FileUploaderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/ruta')]
 class ApiRuta extends AbstractController
 {
     private $entityManager;
     private $fileUploaderService;
-    public function __construct(EntityManagerInterface $entityManager, FileUploaderService $fileUploaderService) {
+
+    private $validator;
+    public function __construct(EntityManagerInterface $entityManager, FileUploaderService $fileUploaderService, ValidatorInterface $validator) {
         $this->entityManager = $entityManager;
         $this->fileUploaderService = $fileUploaderService;
     }
@@ -48,28 +52,6 @@ class ApiRuta extends AbstractController
         return new Response($rutaJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
-    // #[Route('/mejores/{pagina}', name: 'getMejoresRutas', methods: ['GET'])]
-    // public function getMejoresRutas(): Response
-    // {
-    //     $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
-    //     $rutasJson = json_encode($rutas);
-    //     if ($rutasJson == null) {
-    //         return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
-    //     }
-    //     return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
-    // }
-
-    // #[Route('/mejores/{pagina}', name: 'getPaginaRutas', methods: ['GET'])]
-    // public function getPaginaRutas(): Response
-    // {
-    //     $rutas = $this->entityManager->getRepository(Ruta::class)->findMejoresRutas();
-    //     $rutasJson = json_encode($rutas);
-    //     if ($rutasJson == null) {
-    //         return new Response(null, 404, $headers = ["no se han encontrado Rutas"]);
-    //     }
-    //     return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
-    // }
-
 
     //No hace falta con el método general que comprueba los query params de la ruta
     #[Route('/localidad/{nombre}', name: 'getRutasByLocalidad', methods: ['GET'])]
@@ -86,16 +68,6 @@ class ApiRuta extends AbstractController
 
         $rutas = [];
         foreach ($items as $item) {
-            // obtiene las Rutas de cada item
-            // var_dump($item->getLocalidad()->getNombre());
-
-            // if ($item->getLocalidad()->getNombre()==$nombre) {
-            //     rutas[]=
-            // }
-
-            // if ($item->get) {
-            //     rutas[]=
-            // }
             $rutasItem=[];
             $rutasItem[] = $this->entityManager->getRepository(Ruta::class)->findBy(['items' => $item]);
             //Añade las Rutas al array de rutas en bruto
@@ -154,8 +126,28 @@ class ApiRuta extends AbstractController
         return new Response($rutasJson, 200, $headers = ["Content-Type" => "application/json"]);
     }
 
+    #[Route('/fecha', name: 'getRutasByFecha', methods: ['GET'])]
+    public function getRutasByFecha(Request $request): Response
+    {
+        $fechaBusqueda = $request->query->get('fecha');
+
+        if (!$fechaBusqueda) {
+            return $this->json([
+                'error' => 'La fecha es requerida',
+            ], 400);
+        }
+
+        $fechaBusqueda = new \DateTime($fechaBusqueda);
+
+        $rutas = $this->entityManager->getRepository(Ruta::class)->buscarfechaenrango($fechaBusqueda);
+
+        return $this->json([
+            'rutas' => $rutas,
+        ]);
+    }
 
 
+    
     #[Route('/guardaRuta', name: 'guardaRuta', methods: ['POST'])]
     public function creaRuta(HttpFoundationRequest $request): Response
     {
@@ -204,7 +196,9 @@ class ApiRuta extends AbstractController
 
     }
 
-
+    /**
+     * @IsGranted("ROLE_ADMIN")
+     */
     #[Route('/modificarRuta/{id}', name: 'modificarRuta', methods: ['POST'])]
     public function modificaRuta($id, HttpFoundationRequest $request): Response
     {

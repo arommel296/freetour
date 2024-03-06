@@ -23,16 +23,16 @@ $(function () {
     var sitio = $("#sitio");
 
     localidad.autocomplete({
-        source: function(request, response) {
+        source: function (request, response) {
             //petición ajax para obtener los datos
             $.ajax({
                 url: "/api/localidad/all", //ruta de la api
                 dataType: "json", //tipo de datos que se espera
-                success: function(data) {
-                    var results = data.filter(function(localidad) { //filtro para obtener los datos que coincidan con el término de búsqueda
+                success: function (data) {
+                    var results = data.filter(function (localidad) { //filtro para obtener los datos que coincidan con el término de búsqueda
                         return localidad.nombre.toLowerCase().startsWith(request.term.toLowerCase()); //comparación de la cadena de búsqueda con los datos
                     });
-                    response(results.map(function(localidad) {
+                    response(results.map(function (localidad) {
                         return {
                             value: localidad.nombre,
                             id: localidad.id
@@ -43,7 +43,7 @@ $(function () {
         },
         minLength: 2,
 
-        select: function (event, ui) {  
+        select: function (event, ui) {
             console.log("Loclaidad seleccionada: " + ui.item.value + " con id: " + ui.item.id);
             localidad.val(ui.item.value)
             localidad.attr("value", ui.item.id);
@@ -65,8 +65,8 @@ $(function () {
         width: 700,
         height: 650,
         buttons: {
-            Volver: function() {
-            $("#mapaDialog").dialog( "close" );
+            Volver: function () {
+                $("#mapaDialog").dialog("close");
             }
         },
     });
@@ -80,7 +80,7 @@ $(function () {
     function creaMapa() {
         $("#mapaDialog").dialog("open");
 
-            // Inicializa el mapa de Leaflet
+        // Inicializa el mapa de Leaflet
         // L es una variable global de Leaflet
         // map() es una función que crea un mapa en el elemento con el id 'mapid'
         var mapa = L.map('mapid').setView([37.77, -3.79], 15);
@@ -93,7 +93,7 @@ $(function () {
             maxZoom: 22,
             accessToken: 'rSpYFAsrP0xh9UQNavI4LCwxGfaAzB4OVL9PGe4rABoU6l1awbhA9ORdSGE8m515'
         }).addTo(mapa);
-        
+
         mapa.on('click', function (e) {
             // Define las coordenadas del marker donde se ha hecho clic
             marker.setLatLng(e.latlng);
@@ -112,9 +112,9 @@ $(function () {
 
             var sitioFormateado = sitio;
 
-            if (localidad.val()!=""&&sitio!="") {
-                sitioFormateado = sitio+', '+localidad.val();
-            }    
+            if (localidad.val() != "" && sitio != "") {
+                sitioFormateado = sitio + ', ' + localidad.val();
+            }
 
             // Utiliza la API de geocodificación de OpenStreetMap Nominatim para obtener las coordenadas del sitio de la ciudad
             var nominatimURL = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(sitioFormateado);
@@ -139,7 +139,7 @@ $(function () {
                         console.log(coordUsable.text());
                         console.log(coord.val());
                     } else {
-                        alert("No se encontró el lugar en "+localidad.val());
+                        alert("No se encontró el lugar en " + localidad.val());
                     }
                 },
                 error: function () {
@@ -156,11 +156,11 @@ $(function () {
         //         sitio.val(sitio.val()+', '+localidad.val())
         //         buscarPorCiudad;
         //     }
-            
+
         // })
 
         buscar.on("click", buscarPorCiudad)
-        
+
     }
 
 
@@ -173,8 +173,25 @@ $(function () {
         var titulo = $('#titulo').val();
         var coordenadas = $('#coordenadas').val();
         var descripcion = $('#descripcion').jqxEditor('val');
-        var local =localidad.attr("value");
+        var local = localidad.attr("value");
         console.log(local);
+
+        //Iniciazlización variable de errores para coprobar si se puede enviar o no el form
+        let hasError = false;
+
+        if (!foto) {
+            creaAlerta("error", "Debe subir una imagen", "¡Error!");
+            hasError = true;
+        }
+
+        if (!items || items.length === 0) {
+            creaAlerta("error", "Debe añadir al menos un item", "¡Error!");
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
 
         var formData = new FormData();
         formData.append('foto', foto, foto.name);
@@ -199,7 +216,7 @@ $(function () {
                 console.log(error);
             }
         })
-        
+
     })
 
 })

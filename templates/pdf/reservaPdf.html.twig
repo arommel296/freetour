@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva Confirmada</title>
+</head>
+<body>
+    <h2>Datos de su reserva</h2>
+    <div class="info-section">
+        <h3>Información del usuario</h3>
+        <p>Nombre del usuario: {{ usuario.getFullName }}</p>
+        <p>Email del usuario: {{ usuario.email }}</p>
+    </div>
+    <div class="info-section">
+        <h3>Información de la reserva</h3>
+        <p>Número de entradas: {{ reserva.nEntradas }}</p>
+        <p>Momento de la reserva: {{ reserva.fechaReserva|date('d-m-Y H:i') }}</p>
+    </div>
+    <div class="info-section">
+        <h3>Información del tour</h3>
+        <img src="{{ asset('fotos/' ~ reserva.tour.ruta.foto) }}">
+        <p>Nombre de la ruta: {{ tour.ruta.nombre }}</p>
+        <p>Descripción de la ruta: {{ tour.ruta.descripcion|raw }}</p>
+        <p>Fecha y hora: {{ tour.fechaHora|date('d-m-Y H:i') }}</p>
+    </div>
+</body>
+</html>

@@ -24,7 +24,7 @@ class ImportJsonCommand extends Command
     {
         $this
             ->setName('app:import-json')
-            ->setDescription('Importa un JSON con todas las comunidades, provincias y localidades de España a la base de datos.');
+            ->setDescription('Importa un JSON con todas las provincias y localidades de España a la base de datos.');
     }
 
     // #[AsCommand(

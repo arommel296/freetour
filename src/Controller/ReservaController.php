@@ -9,6 +9,8 @@ use App\Entity\Tour;
 use App\Entity\Usuario;
 use App\Entity\Valoracion;
 use App\Form\ReservaType;
+use App\Service\CorreoManager;
+use App\Service\GeneraPdfService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,16 +33,20 @@ class ReservaController extends AbstractController
 
     private $entityManager;
     private $security;
-    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    private $pdfService;
+    private $correoManager;
+    public function __construct(EntityManagerInterface $entityManager, Security $security, GeneraPdfService $pdfService, CorreoManager $correoManager)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->pdfService = $pdfService;
+        $this->correoManager = $correoManager;
     }
 
     #[Route('/reservar/ruta/{id}', name: 'reservar')]
     public function reservar($id, Request $request): Response
     {
-
+        $usuario = $this->getUser();
         $ruta = $this->entityManager->getRepository(Ruta::class)->find($id);
         $itemsRuta = $ruta->getItems();
         $reserva = new Reserva();
@@ -63,8 +69,33 @@ class ReservaController extends AbstractController
             $this->entityManager->persist($reserva);
             $this->entityManager->flush();
 
+            //Generación del html de la plantilla del pdf
+            $plantilla = $this->renderView('pdf/reservaPdf.html.twig', [
+                'tour' => $tour,
+                'reserva' => $reserva,
+                'usuario' => $usuario,
+            ]);
+
+            // Envío del correo electrónico con el pdf adjunto
+            $correo = $usuario->getUserIdentifier();
+            $subject = "Confirmación de reserva";
+            $text = "Adjunto encontrarás la confirmación de tu reserva.";
+            $errorPdf = $this->correoManager->sendEmailPdf($correo, $subject, $text, $plantilla);
+            if (!$errorPdf) {
+                $this->addFlash(
+                    'error', 'hubo un problema al enviar su reserva por email, vuelva a intentarlo.'
+                );
+                return $this->render('reservas/reservar.html.twig', [
+                    'ruta' => $ruta,
+                    'items' => $itemsRuta,
+                    'form' => $form->createView(),
+                ]);
+            }
+            
+
             return $this->redirectToRoute('principal');
         }
+
         return $this->render('reservas/reservar.html.twig', [
             'ruta' => $ruta,
             'items' => $itemsRuta,

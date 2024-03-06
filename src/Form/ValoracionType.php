@@ -11,48 +11,32 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Range;
 
 class ValoracionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('notaGuia', HiddenType::class)
-            ->add('notaRuta', HiddenType::class)
+            ->add('notaGuia', HiddenType::class, [
+                'constraints' => [
+                    new Range([
+                        'min' => 1,
+                        'max' => 5,
+                        'notInRangeMessage' => 'La nota debe estar entre {{ min }} y {{ max }}.',
+                    ]),
+                ],
+            ])
+            ->add('notaRuta', HiddenType::class, [
+                'constraints' => [
+                    new Range([
+                        'min' => 1,
+                        'max' => 5,
+                        'notInRangeMessage' => 'La nota debe estar entre {{ min }} y {{ max }}.',
+                    ]),
+                ],
+            ])
             ->add('comentario')
-            // ->add('notaGuia', ChoiceType::class, [
-            //     'choices' => [
-            //         '1' => 1,
-            //         '2' => 2,
-            //         '3' => 3,
-            //         '4' => 4,
-            //         '5' => 5,
-            //     ],
-            //     'expanded' => true,
-            //     'multiple' => false,
-            // ])
-            // ->add('notaRuta', ChoiceType::class, [
-            //     'choices' => [
-            //         '1' => 1,
-            //         '2' => 2,
-            //         '3' => 3,
-            //         '4' => 4,
-            //         '5' => 5,
-            //     ],
-            //     'expanded' => true,
-            //     'multiple' => false,
-            // ])
-            // ->add('notaRuta', EstrellaType::class, [
-            //     'label' => 'Nota Ruta',
-            // ])
-            // ->add('notaGuia', EstrellaType::class, [
-            //     'label' => 'Nota Guía',
-            // ])
-            // ->add('comentario')
-//             ->add('reserva', EntityType::class, [
-//                 'class' => reserva::class,
-// 'choice_label' => 'id',
-//             ])
         ;
     }
 

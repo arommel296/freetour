@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RutaRepository::class)]
 #[Broadcast]
@@ -20,30 +21,38 @@ class Ruta implements JsonSerializable
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $coordInicio = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $descripcion = null;
 
     #[ORM\ManyToMany(targetEntity: Item::class)]
+    #[Assert\NotBlank]
     private Collection $items;
 
     #[ORM\OneToMany(mappedBy: 'ruta', targetEntity: Tour::class)]
     private Collection $tours;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank]
     private ?string $foto = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $inicio = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $fin = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
     private ?int $aforo = null;
 
     #[ORM\Column(nullable: true)]
